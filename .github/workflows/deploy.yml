@@ -1,0 +1,25 @@
+name: Deploy to EC2
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: executing deploy to server using remote ssh
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd /home/ubuntu/sport-arena-api
+            git pull origin main
+            docker stop capstonecontainer
+            docker rm capstonecontainer
+            docker rmi $(docker images 'capstoneimage' -q) --force
+            docker build -t capstoneimage:latest .
+            docker run -d -p 80:80 -e APP_PORT="80" -e DB_PORT="3306" -e DB_DRIVER="mysql" -e DB_NAME="capstone" -e DB_ADDRESS="${{ secrets.DBHOST }}" -e DB_USERNAME="${{ secrets.DBUSERNAME }}" -e DB_PASSWORD="${{ secrets.DBPASSWORD }}" -e AWS_REGION="${{ secrets.AWS_REGION }}" -e AWS_ACCESS_KEY_ID="${{ secrets.AWS_ACCESS_KEY_ID }}" -e AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}" -e AWS_S3_BUCKET="${{ secrets.AWS_S3_BUCKET }}" --name capstonecontainer capstoneimage:latest
