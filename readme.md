@@ -1,1 +1,1 @@
-## Capstone Project Alterra Academy Sport Arena API
+## Capstone Project Alterra Academy - Sport Arena API
