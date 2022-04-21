@@ -17,12 +17,11 @@ func NewUserUseCase(userRepo _userRepository.UserRepositoryInterface) UserUseCas
 	}
 }
 
-
 func (uuc *UserUseCase) CreateUser(request _entities.User) (_entities.User, error) {
 	password, err := helper.HashPassword(request.Password)
 	request.Password = password
 	users, err := uuc.userRepository.CreateUser(request)
-	
+
 	if request.Fullname == "" {
 		return users, errors.New("Can't be empty")
 	}
@@ -38,6 +37,11 @@ func (uuc *UserUseCase) CreateUser(request _entities.User) (_entities.User, erro
 	if request.Username == "" {
 		return users, errors.New("Can't be empty")
 	}
-	
+
 	return users, err
+}
+
+func (uuc *UserUseCase) DeleteUser(id int) error {
+	err := uuc.userRepository.DeleteUser(id)
+	return err
 }
