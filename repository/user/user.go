@@ -24,3 +24,13 @@ func (ur *UserRepository) CreateUser(request _entities.User) (_entities.User, er
 
 	return request, nil
 }
+
+func (ur *UserRepository) DeleteUser(id int) error {
+
+	err := ur.DB.Delete(&_entities.User{}, id).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
