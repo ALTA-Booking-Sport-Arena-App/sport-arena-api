@@ -9,6 +9,10 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 
+	_authHandler "capstone/delivery/handler/auth"
+	_authRepository "capstone/repository/auth"
+	_authUseCase "capstone/usecase/auth"
+
 	_userHandler "capstone/delivery/handler/user"
 	_routes "capstone/delivery/routes"
 	_userRepository "capstone/repository/user"
@@ -22,6 +26,9 @@ func main() {
 	config := configs.GetConfig()
 	db := _utils.InitDB(config)
 
+	authRepo := _authRepository.NewAuthRepository(db)
+	authUseCase := _authUseCase.NewAuthUseCase(authRepo)
+	authHandler := _authHandler.NewAuthHandler(authUseCase)
 	
 	userRepo := _userRepository.NewUserRepository(db)
 	userUseCase := _userUseCase.NewUserUseCase(userRepo)
@@ -39,6 +46,7 @@ func main() {
 	e.Use(_middleware.CustomLogger())
 
 	_routes.RegisterUserPath(e, userHandler)
+	_routes.RegisterAuthPath(e, authHandler)
 
 	log.Fatal(e.Start(fmt.Sprintf(":%v", config.Port)))
 }
