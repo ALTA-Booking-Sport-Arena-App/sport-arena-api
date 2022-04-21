@@ -49,13 +49,13 @@ func (uh *UserHandler) DeleteUserHandler() echo.HandlerFunc {
 			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("Unauthorized"))
 		}
 
-		id, _ := strconv.Atoi(c.Param("id"))
+		userId, _ := strconv.Atoi(c.Param("userId"))
 
-		if idToken != id {
+		if idToken != userId {
 			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("Unauthorized"))
 		}
 
-		err := uh.userUseCase.DeleteUser(id)
+		err := uh.userUseCase.DeleteUser(userId)
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
 		}
