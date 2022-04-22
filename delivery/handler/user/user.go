@@ -2,6 +2,7 @@ package user
 
 import (
 	"capstone/delivery/helper"
+	"capstone/delivery/image"
 	_middlewares "capstone/delivery/middlewares"
 	_userUseCase "capstone/usecase/user"
 	"net/http"
@@ -66,29 +67,29 @@ func (uh *UserHandler) DeleteUserHandler() echo.HandlerFunc {
 func (uh *UserHandler) UpdateUserHandler() echo.HandlerFunc {
 
 	return func(c echo.Context) error {
-
+		var updateRequest _entities.User
+		// check login status
 		idToken, errToken := _middlewares.ExtractToken(c)
 		if errToken != nil {
-			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("Unauthorized"))
 		}
 
-		var param _entities.User
 		userId, _ := strconv.Atoi(c.Param("userId"))
-
+		// check authorization
 		if idToken != userId {
-			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("Unauthorized"))
 		}
-
-		err := c.Bind(&param)
+		// binding request data
+		err := c.Bind(&updateRequest)
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
 		}
-		users, rows, err := uh.userUseCase.UpdateUser(userId, param)
+		users, rows, err := uh.userUseCase.UpdateUser(userId, updateRequest)
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
 		}
 		if rows == 0 {
-			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("data not found"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("User not found"))
 		}
 
 		responseUser := map[string]interface{}{
@@ -97,7 +98,52 @@ func (uh *UserHandler) UpdateUserHandler() echo.HandlerFunc {
 			"email": users.Email,
 		}
 
-		return c.JSON(http.StatusOK, helper.ResponseSuccess("success update data", responseUser))
+		return c.JSON(http.StatusOK, helper.ResponseSuccess("Success update user data", responseUser))
+	}
+}
+
+func (uh *UserHandler) UpdateUserImageHandler() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		// check login status
+		idToken, errToken := _middlewares.ExtractToken(c)
+		if errToken != nil {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("Unauthorized"))
+		}
+		userId, _ := strconv.Atoi(c.Param("userId"))
+		// check authorization
+		if idToken != userId {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("Unauthorized"))
+		}
+		// binding image
+		fileData, fileInfo, err_binding_image := c.Request().FormFile("image")
+		if err_binding_image != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("Error to bind image"))
+		}
+		// check file CheckFileExtension
+		_, err_check_extension := image.CheckImageFileExtension(fileInfo.Filename)
+		if err_check_extension != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("Error checking file extension"))
+		}
+		// check file size
+		err_check_size := image.CheckImageFileSize(fileInfo.Size)
+		if err_check_size != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("Error checking file size"))
+		}
+		fileName := "user_profile_id_" + strconv.Itoa(idToken)
+		// upload the image
+		var err_upload_photo error
+		theUrl, err_upload_photo := image.UploadImage("users", fileName, fileData)
+		if err_upload_photo != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("Error to upload file"))
+		}
+		rows, err := uh.userUseCase.UpdateUserImage(theUrl, idToken)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
+		}
+		if rows == 0 {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("User not found"))
+		}
+		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("Success to update user image"))
 	}
 }
 
