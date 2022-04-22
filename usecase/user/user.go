@@ -5,7 +5,6 @@ import (
 	_entities "capstone/entities"
 	_userRepository "capstone/repository/user"
 	"errors"
-	"fmt"
 
 	"github.com/jinzhu/copier"
 )
@@ -28,7 +27,6 @@ func (uuc *UserUseCase) GetUserProfile(id int) (_entities.UserResponse, error) {
 	if err != nil {
 		return userResponse, err
 	}
-	fmt.Println(user)
 	copier.Copy(&userResponse, &user)
 	return userResponse, nil
 }
