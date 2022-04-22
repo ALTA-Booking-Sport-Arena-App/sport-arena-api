@@ -61,14 +61,16 @@ func (uuc *UserUseCase) DeleteUser(id int) error {
 }
 
 func (uuc *UserUseCase) UpdateUser(id int, request _entities.User) (_entities.User, int, error) {
-	password, _ := helper.HashPassword(request.Password)
-	request.Password = password
 	user, rows, err := uuc.userRepository.GetUserById(id)
 	if err != nil {
 		return user, 0, err
 	}
 	if rows == 0 {
 		return user, 0, err
+	}
+	if request.Password != "" {
+		password, _ := helper.HashPassword(request.Password)
+		user.Password = password
 	}
 	if request.FullName != "" {
 		user.FullName = request.FullName
@@ -81,9 +83,6 @@ func (uuc *UserUseCase) UpdateUser(id int, request _entities.User) (_entities.Us
 	}
 	if request.PhoneNumber != "" {
 		user.PhoneNumber = request.PhoneNumber
-	}
-	if request.Password != "" {
-		user.Password = request.Password
 	}
 	data, rows, err := uuc.userRepository.UpdateUser(user)
 	return data, rows, err

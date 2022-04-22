@@ -85,14 +85,14 @@ func (uh *UserHandler) UpdateUserHandler() echo.HandlerFunc {
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
 		}
-		users, rows, err := uh.userUseCase.UpdateUser(userId, updateRequest)
+		_, rows, err := uh.userUseCase.UpdateUser(userId, updateRequest)
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
 		}
 		if rows == 0 {
 			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("User not found"))
 		}
-
+		users, _, _ := uh.userUseCase.GetUserById(userId)
 		responseUser := map[string]interface{}{
 			"id":    users.ID,
 			"name":  users.FullName,
