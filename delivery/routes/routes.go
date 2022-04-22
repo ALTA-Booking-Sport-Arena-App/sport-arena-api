@@ -15,4 +15,5 @@ func RegisterAuthPath(e *echo.Echo, ah *_authHandler.AuthHandler) {
 func RegisterUserPath(e *echo.Echo, uh _userHandler.UserHandler) {
 	e.POST("/users", uh.CreateUserHandler())
 	e.DELETE("/users/:userId", uh.DeleteUserHandler(), _middlewares.JWTMiddleware())
+	e.PUT("/users/:userId", uh.UpdateUserHandler(), _middlewares.JWTMiddleware())
 }
