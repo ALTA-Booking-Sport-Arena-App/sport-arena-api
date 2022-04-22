@@ -87,11 +87,14 @@ func (uuc *UserUseCase) UpdateUser(id int, request _entities.User) (_entities.Us
 	if request.Password != "" {
 		user.Password = request.Password
 	}
-
 	users, rows, err := uuc.userRepository.UpdateUser(user)
 	return users, rows, err
 }
 
+func (uuc *UserUseCase) UpdateUserImage(image string, idToken int) (int, error) {
+	rows, err := uuc.userRepository.UpdateUserImage(image, idToken)
+	return rows, err
+}
 func (uuc *UserUseCase) GetUserById(id int) (_entities.User, int, error) {
 	users, rows, err := uuc.userRepository.GetUserById(id)
 	return users, rows, err

@@ -16,5 +16,6 @@ func RegisterUserPath(e *echo.Echo, uh _userHandler.UserHandler) {
 	e.POST("/users", uh.CreateUserHandler())
 	e.DELETE("/users/:userId", uh.DeleteUserHandler(), _middlewares.JWTMiddleware())
 	e.PUT("/users/:userId", uh.UpdateUserHandler(), _middlewares.JWTMiddleware())
+	e.PUT("/users/image/:userId", uh.UpdateUserImageHandler(), _middlewares.JWTMiddleware())
 	e.GET("/users/profile", uh.GetUserProfile(), _middlewares.JWTMiddleware())
 }
