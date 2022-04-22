@@ -28,11 +28,9 @@ func (uuc *UserUseCase) GetUserProfile(id int) (_entities.UserResponse, error) {
 	if err != nil {
 		return userResponse, err
 	}
-	fmt.Println("userResponse : ", userResponse)
-	fmt.Println("user : ", user)
+	fmt.Println(user)
 	copier.Copy(&userResponse, &user)
-
-	fmt.Println("userResponse : ", userResponse)
+	fmt.Println(userResponse)
 	return userResponse, nil
 }
 
