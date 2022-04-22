@@ -34,7 +34,7 @@ func (uuc *UserUseCase) GetUserProfile(id int) (_entities.UserResponse, error) {
 }
 
 func (uuc *UserUseCase) CreateUser(request _entities.User) (_entities.User, error) {
-	password, err := helper.HashPassword(request.Password)
+	password, _ := helper.HashPassword(request.Password)
 	request.Password = password
 	users, err := uuc.userRepository.CreateUser(request)
 
@@ -70,7 +70,7 @@ func (uuc *UserUseCase) UpdateUser(id int, request _entities.User) (_entities.Us
 		return user, 0, err
 	}
 	if rows == 0 {
-		return user, 0, nil
+		return user, 0, err
 	}
 	if request.Fullname != "" {
 		user.Fullname = request.Fullname
@@ -87,15 +87,40 @@ func (uuc *UserUseCase) UpdateUser(id int, request _entities.User) (_entities.Us
 	if request.Password != "" {
 		user.Password = request.Password
 	}
-	users, rows, err := uuc.userRepository.UpdateUser(user)
-	return users, rows, err
+	data, rows, err := uuc.userRepository.UpdateUser(user)
+	return data, rows, err
 }
 
 func (uuc *UserUseCase) UpdateUserImage(image string, idToken int) (int, error) {
 	rows, err := uuc.userRepository.UpdateUserImage(image, idToken)
 	return rows, err
 }
+
 func (uuc *UserUseCase) GetUserById(id int) (_entities.User, int, error) {
-	users, rows, err := uuc.userRepository.GetUserById(id)
-	return users, rows, err
+	user, rows, err := uuc.userRepository.GetUserById(id)
+	return user, rows, err
+}
+
+func (uuc *UserUseCase) RequestOwner(id int, certificate string, requestOwner _entities.User) (int, error) {
+	user, rows, err := uuc.userRepository.GetUserById(id)
+	if err != nil {
+		return 0, err
+	}
+	if rows == 0 {
+		return 0, err
+	}
+	if requestOwner.BusinessName != "" {
+		user.BusinessName = requestOwner.BusinessName
+	} else if requestOwner.BusinessName == "" {
+		return -1, err
+	}
+	if requestOwner.BusinessDescription != "" {
+		user.BusinessDescription = requestOwner.BusinessDescription
+	} else if requestOwner.BusinessDescription == "" {
+		return -1, err
+	}
+	user.BusinessCertificate = certificate
+	user.Status = "Pending"
+	row, err := uuc.userRepository.RequestOwner(user)
+	return row, err
 }

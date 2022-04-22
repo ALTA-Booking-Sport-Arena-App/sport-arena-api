@@ -1,6 +1,7 @@
 package user
 
 import (
+	"capstone/delivery/certificate"
 	"capstone/delivery/helper"
 	"capstone/delivery/image"
 	_middlewares "capstone/delivery/middlewares"
@@ -131,7 +132,6 @@ func (uh *UserHandler) UpdateUserImageHandler() echo.HandlerFunc {
 		}
 		fileName := "user_profile_id_" + strconv.Itoa(idToken)
 		// upload the image
-		var err_upload_photo error
 		theUrl, err_upload_photo := image.UploadImage("users", fileName, fileData)
 		if err_upload_photo != nil {
 			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("Error to upload file"))
@@ -161,5 +161,53 @@ func (uh *UserHandler) GetUserProfile() echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("Get user profile failed"))
 		}
 		return c.JSON(http.StatusOK, helper.ResponseSuccess("Successfully get user profile", userProfile))
+	}
+}
+
+func (uh *UserHandler) RequestOwnerHandler() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		// check login status
+		idToken, errToken := _middlewares.ExtractToken(c)
+		if errToken != nil {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("Unauthorized"))
+		}
+		// binding data
+		var requestOwner _entities.User
+		errBind := c.Bind(&requestOwner)
+		if errBind != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("error to bind data"))
+		}
+		// binding certiifcate
+		fileData, fileInfo, err_binding_certificate := c.Request().FormFile("business_certificate")
+		if err_binding_certificate != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error to bind certificate"))
+		}
+		// check file CheckFileExtension
+		_, err_check_extension := certificate.CheckCertificateFileExtension(fileInfo.Filename)
+		if err_check_extension != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("Please upload pdf file"))
+		}
+		// check file size
+		err_check_size := certificate.CheckCertificateFileSize(fileInfo.Size)
+		if err_check_size != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("File is too big"))
+		}
+		fileName := "user_owner_certificate_" + strconv.Itoa(idToken)
+		// upload the certificate
+		certificate, err_upload_certificate := certificate.UploadCertificate("owners", fileName, fileData)
+		if err_upload_certificate != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("Error to upload file"))
+		}
+		rows, err := uh.userUseCase.RequestOwner(idToken, certificate, requestOwner)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
+		}
+		if rows == 0 {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("User not found"))
+		}
+		if rows == -1 {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("Please fill all needed fields"))
+		}
+		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("Success to request for being owner"))
 	}
 }
