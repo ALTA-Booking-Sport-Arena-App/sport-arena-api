@@ -11,4 +11,5 @@ type UserRepositoryInterface interface {
 	GetUserById(id int) (_entities.User, int, error)
 	GetUserProfile(id int) (_entities.User, error)
 	UpdateUserImage(image string, idToken int) (int, error)
+	RequestOwner(requestOwner _entities.User) (int, error)
 }

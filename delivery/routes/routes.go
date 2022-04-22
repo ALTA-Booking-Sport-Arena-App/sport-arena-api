@@ -18,4 +18,5 @@ func RegisterUserPath(e *echo.Echo, uh _userHandler.UserHandler) {
 	e.PUT("/users/:userId", uh.UpdateUserHandler(), _middlewares.JWTMiddleware())
 	e.PUT("/users/image/:userId", uh.UpdateUserImageHandler(), _middlewares.JWTMiddleware())
 	e.GET("/users/profile", uh.GetUserProfile(), _middlewares.JWTMiddleware())
+	e.PUT("/owners/request", uh.RequestOwnerHandler(), _middlewares.JWTMiddleware())
 }
