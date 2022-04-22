@@ -34,7 +34,7 @@ func (ar *AuthRepository) Login(email string, password string) (string, error) {
 		return "password incorrect", errors.New("password incorrect")
 	}
 
-	token, err := middlewares.CreateToken(int(user.ID), user.Fullname)
+	token, err := middlewares.CreateToken(int(user.ID), user.FullName)
 	if err != nil {
 		return "create token failed", err
 	}
