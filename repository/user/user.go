@@ -54,3 +54,16 @@ func (ur *UserRepository) GetUserById(idToken int) (_entities.User, int, error) 
 	}
 	return users, int(tx.RowsAffected), nil
 }
+
+func (ur *UserRepository) GetUserProfile(id int) (_entities.User, error) {
+	var users _entities.User
+
+	yx := ur.DB.Where("id = ?", id).First(&users)
+
+	if yx.Error != nil {
+		return users, yx.Error
+	}
+
+	return users, nil
+
+}

@@ -5,6 +5,8 @@ import (
 	_entities "capstone/entities"
 	_userRepository "capstone/repository/user"
 	"errors"
+
+	"github.com/jinzhu/copier"
 )
 
 type UserUseCase struct {
@@ -15,6 +17,20 @@ func NewUserUseCase(userRepo _userRepository.UserRepositoryInterface) UserUseCas
 	return &UserUseCase{
 		userRepository: userRepo,
 	}
+}
+
+func (uuc *UserUseCase) GetUserProfile(id int) (_entities.UserResponse, error) {
+	//TODO implement me
+	userResponse := _entities.UserResponse{}
+	user, err := uuc.userRepository.GetUserProfile(id)
+
+	if err != nil {
+		return userResponse, err
+	}
+
+	copier.Copy(&userResponse, &user)
+
+	return userResponse, nil
 }
 
 func (uuc *UserUseCase) CreateUser(request _entities.User) (_entities.User, error) {
