@@ -100,3 +100,20 @@ func (uh *UserHandler) UpdateUserHandler() echo.HandlerFunc {
 		return c.JSON(http.StatusOK, helper.ResponseSuccess("success update data", responseUser))
 	}
 }
+
+func (uh *UserHandler) GetUserProfile() echo.HandlerFunc {
+	return func(c echo.Context) error {
+
+		id, errToken := _middlewares.ExtractToken(c)
+
+		if errToken != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("Token not found"))
+		}
+
+		userProfile, err := uh.userUseCase.GetUserProfile(id)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("Get user profile failed"))
+		}
+		return c.JSON(http.StatusOK, helper.ResponseSuccess("Successfully get user profile", userProfile))
+	}
+}

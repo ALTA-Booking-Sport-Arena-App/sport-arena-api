@@ -1,0 +1,375 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Sport Arena API
+  description: Sport Arena API
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/hafidhirsyad/sport-arena-api/1.0.0
+    variables:
+      environment:
+        default: dev
+        enum:
+          - "prod"
+          - "dev"
+tags:
+  - name: Login
+  - name: Register
+  - name: Users
+paths:
+  /login:
+    post:
+      tags:
+        - Login
+      description: Login user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestLogin"
+            examples:
+              userData1:
+                description: "Example data user"
+                value: { email: "admin@admin.com", password: "admin" }
+              userData2:
+                description: "Example data user"
+                value: { email: "admin123", password: "admin123" }
+      responses:
+        "200":
+          description: Success Response
+          content:
+            application/json:
+              examples:
+                responseData1:
+                  description: response success 1
+                  value:
+                    {
+                      data:
+                        {
+                          token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2MzgzMjYxODAsInVzZXJJZCI6MSwidXNlcm5hbWUiOiJhZG1pbiJ9.AebFR-oQjUSOMez2ucDWkiMrS2eQIPmcYm5c71qZ_co",
+                        },
+                      code: 200,
+                      message: "Login successfully",
+                    }
+                responseData2:
+                  description: response success 2
+                  value:
+                    {
+                      data:
+                        {
+                          token: "AyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2MzgzMjYxODAsInVzZXJJZCI6MSwidXNlcm5hbWUiOiJhZG1pbiJ9.AebFR-oQjUSOMez2ucDWkiMrS2eQIPmcYm5c71qZ_co",
+                        },
+                      code: 200,
+                      message: "Login successfully",
+                    }
+
+        "400":
+          description: Success Response
+          content:
+            application/json:
+              examples:
+                responseData1:
+                  description: response failed 1
+                  value:
+                    { code: 400, message: "user not found" }
+                responseData2:
+                  description: response failed 2
+                  value:
+                    {
+                      code: 400,
+                      message: "password incorrect",
+                    }
+  /users:
+    post:
+      tags:
+        - Register
+      description: Register User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestUserData"
+            examples:
+              userData1:
+                description: "Example data user"
+                value:
+                  {
+                    ID: 1,
+                    fullname: "adminbaruselesai",
+                    username: "admin123",
+                    email: "admin@mail.com",
+                    phone_number: "012345678",
+                    password: "admin",
+                  }
+              userData2:
+                description: "Example data user"
+                value:
+                  {
+                    ID: 2,
+                    fullname: "adminbaruselesai",
+                    username: "admin123",
+                    email: "admin@mail.com",
+                    phone_number: "012345678",
+                    password: "admin",
+                  }
+      responses:
+        "200":
+          $ref: "#/components/responses/registerUserSuccess"
+        "400":
+          $ref: "#/components/responses/registerUserFailed"
+
+  /users/profile :
+    get:
+      tags:
+        - Users
+      description: Get User by Token
+      security:
+        - JWTAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/getUserProfileSuccess"
+        "400":
+          $ref: "#/components/responses/getUserProfileFailed"
+  /users/{userId}:
+    put:
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: integer
+          required: true
+      description: Edit User Profile by Token
+      security:
+        - JWTAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fullname:
+                  type: string
+                  example: admin barusan selesai
+                username:
+                  type: string
+                  example: admin
+                email:
+                  type: string
+                  example: admin@mail.com
+                phone_number:
+                  type: string
+                  example: "0123456789"
+                password:
+                  type: string
+                  example: admin
+      responses:
+        "200":
+          $ref: "#/components/responses/editUserProfileSuccess"
+        "400":
+          $ref: "#/components/responses/editUserProfileFailed"
+    delete:
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: integer
+          required: true
+      description: Delete User by Token
+      security:
+        - JWTAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/responseSuccess"
+        "400":
+          $ref: "#/components/responses/responseFailed"
+#==================================#
+#    COMPONENT
+#==================================#
+components:
+  #==================================#
+  #    JWT
+  #==================================#
+  securitySchemes:
+    JWTAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "use Token"
+  #==================================#
+  #    SCHEMAS
+  #==================================#
+  schemas:
+    RequestLogin:
+      type: object
+      properties:
+        "email":
+          type: string
+          example: admin
+        "password":
+          type: string
+          example: admin
+    RequestUserData:
+      type: object
+      properties:
+        "fullname":
+          type: string
+          example: admin123
+        "username":
+          type: string
+          example: admin
+        "email":
+          type: string
+          example: admin@mail.com
+        "phone_number":
+          type: string
+          example: "082333444555"
+        "password":
+          type: string
+          example: admin
+    #==================================#
+    #    RESPONSE USER
+    #==================================#
+  responses:
+    responseSuccess:
+      description: Successful Operation
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 200
+              message:
+                type: string
+                example: success delete user
+    responseFailed:
+      description: Failed Operation
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 400
+              message:
+                type: string
+                example: failed delete user
+    registerUserSuccess:
+      description: success to register
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 200
+              message:
+                type: string
+                example: register successfully
+    registerUserFailed:
+      description: failed to register
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 400
+              message:
+                type: string
+                example: register failed
+    getUserProfileSuccess:
+      description: success get user profile
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data_user:
+                type: object
+                properties:
+                  ID:
+                    type: integer
+                    example: 1
+                  CreatedAt:
+                    type: string
+                    example: "2022-04-07T21:08:54.73+07:00"
+                  UpdatedAt:
+                    type: string
+                    example: "2022-04-07T21:08:54.73+07:00"
+                  fullname:
+                    type: string
+                    example: sepatu baru beli
+                  username:
+                    type: string
+                    example: sepatu
+                  email:
+                    type: string
+                    example: sepatu@mail.com
+                  phone_number:
+                    type: string
+                    example: 082333444555
+                  bussiness_name:
+                    type: string
+                    example: name bussiness
+                  bussiness_type:
+                    type: string
+                    example: name type
+                  bussiness_terms:
+                    type: string
+                    example: terms certificate
+              code:
+                type: integer
+                example: 200
+              message:
+                type: string
+                example: success get user profile
+    getUserProfileFailed:
+      description: fail to get user profile
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 400
+              message:
+                type: string
+                example: failed get user profile
+    editUserProfileSuccess:
+      description: success edit user profile
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 200
+              message:
+                type: string
+                example: success edit user profile
+    editUserProfileFailed:
+      description: fail to edit user profile
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 400
+              message:
+                type: string
+                example: failed edit user profile
