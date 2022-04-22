@@ -30,7 +30,6 @@ func (uuc *UserUseCase) GetUserProfile(id int) (_entities.UserResponse, error) {
 	}
 	fmt.Println(user)
 	copier.Copy(&userResponse, &user)
-	fmt.Println(userResponse)
 	return userResponse, nil
 }
 
