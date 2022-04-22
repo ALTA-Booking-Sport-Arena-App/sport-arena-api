@@ -45,3 +45,38 @@ func (uuc *UserUseCase) DeleteUser(id int) error {
 	err := uuc.userRepository.DeleteUser(id)
 	return err
 }
+
+func (uuc *UserUseCase) UpdateUser(id int, request _entities.User) (_entities.User, int, error) {
+	password, _ := helper.HashPassword(request.Password)
+	request.Password = password
+	user, rows, err := uuc.userRepository.GetUserById(id)
+	if err != nil {
+		return user, 0, err
+	}
+	if rows == 0 {
+		return user, 0, nil
+	}
+	if request.Fullname != "" {
+		user.Fullname = request.Fullname
+	}
+	if request.Username != "" {
+		user.Username = request.Username
+	}
+	if request.Email != "" {
+		user.Email = request.Email
+	}
+	if request.PhoneNumber != "" {
+		user.PhoneNumber = request.PhoneNumber
+	}
+	if request.Password != "" {
+		user.Password = request.Password
+	}
+
+	users, rows, err := uuc.userRepository.UpdateUser(user)
+	return users, rows, err
+}
+
+func (uuc *UserUseCase) GetUserById(id int) (_entities.User, int, error) {
+	users, rows, err := uuc.userRepository.GetUserById(id)
+	return users, rows, err
+}
