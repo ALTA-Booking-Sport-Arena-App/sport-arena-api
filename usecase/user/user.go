@@ -5,6 +5,7 @@ import (
 	_entities "capstone/entities"
 	_userRepository "capstone/repository/user"
 	"errors"
+	"fmt"
 
 	"github.com/jinzhu/copier"
 )
@@ -22,14 +23,16 @@ func NewUserUseCase(userRepo _userRepository.UserRepositoryInterface) UserUseCas
 func (uuc *UserUseCase) GetUserProfile(id int) (_entities.UserResponse, error) {
 	//TODO implement me
 	userResponse := _entities.UserResponse{}
-	user, err := uuc.userRepository.GetUserProfile(id)
+	user, _, err := uuc.userRepository.GetUserById(id)
 
 	if err != nil {
 		return userResponse, err
 	}
-
+	fmt.Println("userResponse : ", userResponse)
+	fmt.Println("user : ", user)
 	copier.Copy(&userResponse, &user)
 
+	fmt.Println("userResponse : ", userResponse)
 	return userResponse, nil
 }
 
@@ -38,7 +41,7 @@ func (uuc *UserUseCase) CreateUser(request _entities.User) (_entities.User, erro
 	request.Password = password
 	users, err := uuc.userRepository.CreateUser(request)
 
-	if request.Fullname == "" {
+	if request.FullName == "" {
 		return users, errors.New("Can't be empty")
 	}
 	if request.Email == "" {
@@ -72,8 +75,8 @@ func (uuc *UserUseCase) UpdateUser(id int, request _entities.User) (_entities.Us
 	if rows == 0 {
 		return user, 0, err
 	}
-	if request.Fullname != "" {
-		user.Fullname = request.Fullname
+	if request.FullName != "" {
+		user.FullName = request.FullName
 	}
 	if request.Username != "" {
 		user.Username = request.Username

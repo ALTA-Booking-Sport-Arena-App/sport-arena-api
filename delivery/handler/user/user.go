@@ -95,7 +95,7 @@ func (uh *UserHandler) UpdateUserHandler() echo.HandlerFunc {
 
 		responseUser := map[string]interface{}{
 			"id":    users.ID,
-			"name":  users.Fullname,
+			"name":  users.FullName,
 			"email": users.Email,
 		}
 
