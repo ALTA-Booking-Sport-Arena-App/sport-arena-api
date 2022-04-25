@@ -3,6 +3,7 @@ package routes
 import (
 	_authHandler "capstone/delivery/handler/auth"
 	_categoryHandler "capstone/delivery/handler/category"
+	_facilityHandler "capstone/delivery/handler/facility"
 	_userHandler "capstone/delivery/handler/user"
 	_middlewares "capstone/delivery/middlewares"
 
@@ -27,4 +28,9 @@ func RegisterCategoryPath(e *echo.Echo, uh _categoryHandler.CategoryHandler) {
 	e.POST("/category", uh.CreateCategoryHandler(), _middlewares.JWTMiddleware())
 	e.PUT("/category/:id", uh.UpdateCategoryHandler(), _middlewares.JWTMiddleware())
 	e.DELETE("/category/:id", uh.DeleteCategoryHandler(), _middlewares.JWTMiddleware())
+}
+
+func RegisterFacilityPath(e *echo.Echo, uh _facilityHandler.FacilityHandler) {
+	e.GET("/facility", uh.GetAllFacilityHandler())
+	e.POST("/facility", uh.CreateFacilityHandler(), _middlewares.JWTMiddleware())
 }

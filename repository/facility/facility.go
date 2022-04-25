@@ -24,3 +24,12 @@ func (cr *FacilityRepository) GetAllFacility() ([]_entities.Facility, error) {
 	}
 	return facility, nil
 }
+
+func (ur *FacilityRepository) CreateFacility(request _entities.Facility) (_entities.Facility, error) {
+	yx := ur.DB.Save(&request)
+	if yx.Error != nil {
+		return request, yx.Error
+	}
+
+	return request, nil
+}
