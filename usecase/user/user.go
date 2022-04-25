@@ -143,3 +143,44 @@ func (uuc *UserUseCase) GetListOwners() ([]_entities.ListOwnersResponse, error) 
 	copier.Copy(&listOwnersResponse, &owners)
 	return listOwnersResponse, nil
 }
+
+func (uuc *UserUseCase) ApproveOwnerRequest(request _entities.User) error {
+	id := int(request.ID)
+	user, rows, err := uuc.userRepository.GetUserById(id)
+	if err != nil {
+		return err
+	}
+	if rows == 0 {
+		return err
+	}
+	if request.Role != "" {
+		user.Role = request.Role
+	}
+	if request.Status != "" {
+		user.Status = request.Status
+	}
+	err1 := uuc.userRepository.ApproveOwnerRequest(user)
+	if err1 != nil {
+		return err1
+	}
+	return nil
+}
+
+func (uuc *UserUseCase) RejectOwnerRequest(request _entities.User) error {
+	id := int(request.ID)
+	user, rows, err := uuc.userRepository.GetUserById(id)
+	if err != nil {
+		return err
+	}
+	if rows == 0 {
+		return err
+	}
+	if request.Status != "" {
+		user.Status = request.Status
+	}
+	err1 := uuc.userRepository.ApproveOwnerRequest(user)
+	if err1 != nil {
+		return err1
+	}
+	return nil
+}

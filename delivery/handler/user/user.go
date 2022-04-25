@@ -243,3 +243,45 @@ func (uh *UserHandler) GetLIstOwnersHandler() echo.HandlerFunc {
 		return c.JSON(http.StatusOK, helper.ResponseSuccess("success to get all owners", listOwners))
 	}
 }
+
+func (uh *UserHandler) ApproveOwnerRequestHandler() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		var request _entities.User
+		// check login status
+		_, errToken := _middlewares.ExtractToken(c)
+		if errToken != nil {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
+		// binding request data
+		errBind := c.Bind(&request)
+		if errBind != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(errBind.Error()))
+		}
+		err := uh.userUseCase.ApproveOwnerRequest(request)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("verification approved failed"))
+		}
+		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("verification approved successfully"))
+	}
+}
+
+func (uh *UserHandler) RejectOwnerRequestHandler() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		var request _entities.User
+		// check login status
+		_, errToken := _middlewares.ExtractToken(c)
+		if errToken != nil {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
+		// binding request data
+		errBind := c.Bind(&request)
+		if errBind != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(errBind.Error()))
+		}
+		err := uh.userUseCase.ApproveOwnerRequest(request)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("verification reject failed"))
+		}
+		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("verification reject successfully"))
+	}
+}
