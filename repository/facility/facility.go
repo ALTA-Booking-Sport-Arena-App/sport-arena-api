@@ -33,3 +33,11 @@ func (ur *FacilityRepository) CreateFacility(request _entities.Facility) (_entit
 
 	return request, nil
 }
+
+func (ur *FacilityRepository) UpdateFacility(id uint, request _entities.Facility) (_entities.Facility, int, error) {
+	tx := ur.DB.Model(&_entities.Facility{}).Where("id = ?", id).Updates(request)
+	if tx.Error != nil {
+		return request, 0, tx.Error
+	}
+	return request, int(tx.RowsAffected), nil
+}
