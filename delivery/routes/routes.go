@@ -24,4 +24,5 @@ func RegisterUserPath(e *echo.Echo, uh _userHandler.UserHandler) {
 
 func RegisterCategoryPath(e *echo.Echo, uh _categoryHandler.CategoryHandler) {
 	e.GET("/category", uh.GetAllCategoryHandler())
+	e.POST("/category", uh.CreateCategoryHandler(), _middlewares.JWTMiddleware())
 }

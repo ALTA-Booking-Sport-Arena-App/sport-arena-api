@@ -24,3 +24,13 @@ func (cr *CategoryRepository) GetAllCategory() ([]_entities.Category, error) {
 	}
 	return category, nil
 }
+
+func (ur *CategoryRepository) CreateCategory(request _entities.Category) (_entities.Category, error) {
+
+	yx := ur.DB.Save(&request)
+	if yx.Error != nil {
+		return request, yx.Error
+	}
+
+	return request, nil
+}

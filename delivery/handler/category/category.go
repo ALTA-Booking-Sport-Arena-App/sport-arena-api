@@ -2,6 +2,7 @@ package catagory
 
 import (
 	"capstone/delivery/helper"
+	_entities "capstone/entities"
 	_categoryUseCase "capstone/usecase/category"
 	"net/http"
 
@@ -35,5 +36,22 @@ func (uh *CategoryHandler) GetAllCategoryHandler() echo.HandlerFunc {
 		}
 
 		return c.JSON(http.StatusOK, helper.ResponseSuccess("success get all catagories", responseCategories))
+	}
+}
+
+func (uh *CategoryHandler) CreateCategoryHandler() echo.HandlerFunc {
+
+	return func(c echo.Context) error {
+		var param _entities.Category
+
+		err := c.Bind(&param)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
+		}
+		projects, err := uh.categoryUseCase.CreateCategory(param)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
+		}
+		return c.JSON(http.StatusOK, helper.ResponseSuccess("success create task", projects))
 	}
 }
