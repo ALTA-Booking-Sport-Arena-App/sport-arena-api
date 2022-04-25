@@ -81,3 +81,17 @@ func (uh *FacilityHandler) UpdateFacilityHandler() echo.HandlerFunc {
 		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("updated facility successfully"))
 	}
 }
+
+func (uh *FacilityHandler) DeleteFacilityHandler() echo.HandlerFunc {
+
+	return func(c echo.Context) error {
+
+		id, _ := strconv.Atoi(c.Param("id"))
+
+		err := uh.facilityUseCase.DeleteFacility(id)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("deleted facility failed"))
+		}
+		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("deleted facility successfully"))
+	}
+}

@@ -41,3 +41,13 @@ func (ur *FacilityRepository) UpdateFacility(id uint, request _entities.Facility
 	}
 	return request, int(tx.RowsAffected), nil
 }
+
+func (ur *FacilityRepository) DeleteFacility(id int) error {
+
+	err := ur.DB.Unscoped().Delete(&_entities.Facility{}, id).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

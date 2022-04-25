@@ -34,4 +34,5 @@ func RegisterFacilityPath(e *echo.Echo, uh _facilityHandler.FacilityHandler) {
 	e.GET("/facility", uh.GetAllFacilityHandler())
 	e.POST("/facility", uh.CreateFacilityHandler(), _middlewares.JWTMiddleware())
 	e.PUT("/facility/:id", uh.UpdateFacilityHandler(), _middlewares.JWTMiddleware())
+	e.DELETE("/facility/:id", uh.DeleteFacilityHandler(), _middlewares.JWTMiddleware())
 }
