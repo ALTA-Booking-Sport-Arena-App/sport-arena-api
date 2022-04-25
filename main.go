@@ -22,6 +22,10 @@ import (
 	_categoryRepository "capstone/repository/category"
 	_categoryUseCase "capstone/usecase/category"
 
+	_facilityHandler "capstone/delivery/handler/facility"
+	_facilityRepository "capstone/repository/facility"
+	_facilityUseCase "capstone/usecase/facility"
+
 	_middleware "capstone/delivery/middlewares"
 	_utils "capstone/utils"
 )
@@ -42,6 +46,10 @@ func main() {
 	categoryUseCase := _categoryUseCase.NewCategoryUseCase(categoryRepo)
 	categoryHandler := _categoryHandler.NewCategoryHandler(categoryUseCase)
 
+	facilityRepo := _facilityRepository.NewFacilityRepository(db)
+	facilityUseCase := _facilityUseCase.NewFacilityUseCase(facilityRepo)
+	facilityHandler := _facilityHandler.NewFacilityHandler(facilityUseCase)
+
 	e := echo.New()
 	e.Use(middleware.CORS())
 	e.Pre(middleware.RemoveTrailingSlash())
@@ -54,6 +62,7 @@ func main() {
 	_routes.RegisterUserPath(e, userHandler)
 	_routes.RegisterAuthPath(e, authHandler)
 	_routes.RegisterCategoryPath(e, categoryHandler)
+	_routes.RegisterFacilityPath(e, facilityHandler)
 
 	log.Fatal(e.Start(fmt.Sprintf(":%v", config.Port)))
 }

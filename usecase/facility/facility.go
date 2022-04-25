@@ -19,3 +19,8 @@ func (cuc *FacilityUseCase) GetAllFacility() ([]_entities.Facility, error) {
 	facility, err := cuc.facilityRepository.GetAllFacility()
 	return facility, err
 }
+
+func (cuc *FacilityUseCase) CreateFacility(request _entities.Facility) (_entities.Facility, error) {
+	facility, err := cuc.facilityRepository.CreateFacility(request)
+	return facility, err
+}

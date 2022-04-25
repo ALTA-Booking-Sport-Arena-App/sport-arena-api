@@ -2,6 +2,7 @@ package facility
 
 import (
 	"capstone/delivery/helper"
+	_entities "capstone/entities"
 	_facilityUseCase "capstone/usecase/facility"
 	"net/http"
 
@@ -37,4 +38,22 @@ func (uh *FacilityHandler) GetAllFacilityHandler() echo.HandlerFunc {
 
 		return c.JSON(http.StatusOK, helper.ResponseSuccess("success get all facilities", responseFacilities))
 	}
+}
+
+func (uh *FacilityHandler) CreateFacilityHandler() echo.HandlerFunc {
+
+	return func(c echo.Context) error {
+		var param _entities.Facility
+
+		err := c.Bind(&param)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
+		}
+		_, err = uh.facilityUseCase.CreateFacility(param)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("created facility failed"))
+		}
+		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("created facility successfully"))
+	}
+
 }
