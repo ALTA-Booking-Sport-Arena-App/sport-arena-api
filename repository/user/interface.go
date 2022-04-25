@@ -14,4 +14,6 @@ type UserRepositoryInterface interface {
 	RequestOwner(requestOwner _entities.User) (int, error)
 	GetListUsers() ([]_entities.User, error)
 	GetListOwners() ([]_entities.User, error)
+	ApproveOwnerRequest(request _entities.User) error
+	RejectOwnerRequest(request _entities.User) error
 }

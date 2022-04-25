@@ -14,4 +14,6 @@ type UserUseCaseInterface interface {
 	RequestOwner(id int, certificate string, requestOwner _entities.User) (int, error)
 	GetListUsers() ([]_entities.ListUsersResponse, error)
 	GetListOwners() ([]_entities.ListOwnersResponse, error)
+	ApproveOwnerRequest(request _entities.User) error
+	RejectOwnerRequest(request _entities.User) error
 }

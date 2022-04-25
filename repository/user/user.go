@@ -85,6 +85,8 @@ func (ur *UserRepository) RequestOwner(requestOwner _entities.User) (int, error)
 	return int(tx.RowsAffected), nil
 }
 
+// ================= ADMIN SECTIONS =================
+
 func (ur *UserRepository) GetListUsers() ([]_entities.User, error) {
 	var users []_entities.User
 	tx := ur.DB.Find(&users)
@@ -101,4 +103,20 @@ func (ur *UserRepository) GetListOwners() ([]_entities.User, error) {
 		return users, tx.Error
 	}
 	return users, nil
+}
+
+func (ur *UserRepository) ApproveOwnerRequest(request _entities.User) error {
+	tx := ur.DB.Save(&request)
+	if tx.Error != nil {
+		return tx.Error
+	}
+	return nil
+}
+
+func (ur *UserRepository) RejectOwnerRequest(request _entities.User) error {
+	tx := ur.DB.Save(&request)
+	if tx.Error != nil {
+		return tx.Error
+	}
+	return nil
 }
