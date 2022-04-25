@@ -5,6 +5,7 @@ import (
 	_entities "capstone/entities"
 	_categoryUseCase "capstone/usecase/category"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
@@ -53,5 +54,29 @@ func (uh *CategoryHandler) CreateCategoryHandler() echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("created category failed"))
 		}
 		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("created category successfully"))
+	}
+
+}
+
+func (uh *CategoryHandler) UpdateCategoryHandler() echo.HandlerFunc {
+
+	return func(c echo.Context) error {
+
+		var param _entities.Category
+		id, _ := strconv.Atoi(c.Param("id"))
+
+		err := c.Bind(&param)
+
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
+		}
+		_, rows, err := uh.categoryUseCase.UpdateCategory(uint(id), param)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("updated category failed"))
+		}
+		if rows == 0 {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("data not found"))
+		}
+		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("updated category successfully"))
 	}
 }

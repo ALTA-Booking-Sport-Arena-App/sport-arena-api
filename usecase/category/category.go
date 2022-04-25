@@ -24,3 +24,8 @@ func (cuc *CategoryUseCase) CreateCategory(request _entities.Category) (_entitie
 	category, err := cuc.categoryRepository.CreateCategory(request)
 	return category, err
 }
+
+func (uuc *CategoryUseCase) UpdateCategory(id uint, request _entities.Category) (_entities.Category, int, error) {
+	category, rows, err := uuc.categoryRepository.UpdateCategory(id, request)
+	return category, rows, err
+}
