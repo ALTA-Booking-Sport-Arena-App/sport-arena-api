@@ -29,3 +29,8 @@ func (cuc *FacilityUseCase) UpdateFacility(id uint, request _entities.Facility) 
 	facility, rows, err := cuc.facilityRepository.UpdateFacility(id, request)
 	return facility, rows, err
 }
+
+func (cuc *FacilityUseCase) DeleteFacility(id int) error {
+	err := cuc.facilityRepository.DeleteFacility(id)
+	return err
+}
