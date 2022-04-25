@@ -33,4 +33,5 @@ func RegisterCategoryPath(e *echo.Echo, uh _categoryHandler.CategoryHandler) {
 func RegisterFacilityPath(e *echo.Echo, uh _facilityHandler.FacilityHandler) {
 	e.GET("/facility", uh.GetAllFacilityHandler())
 	e.POST("/facility", uh.CreateFacilityHandler(), _middlewares.JWTMiddleware())
+	e.PUT("/facility/:id", uh.UpdateFacilityHandler(), _middlewares.JWTMiddleware())
 }

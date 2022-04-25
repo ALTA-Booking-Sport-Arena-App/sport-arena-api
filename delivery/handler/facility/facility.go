@@ -5,6 +5,7 @@ import (
 	_entities "capstone/entities"
 	_facilityUseCase "capstone/usecase/facility"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
@@ -56,4 +57,27 @@ func (uh *FacilityHandler) CreateFacilityHandler() echo.HandlerFunc {
 		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("created facility successfully"))
 	}
 
+}
+
+func (uh *FacilityHandler) UpdateFacilityHandler() echo.HandlerFunc {
+
+	return func(c echo.Context) error {
+
+		var param _entities.Facility
+		id, _ := strconv.Atoi(c.Param("id"))
+
+		err := c.Bind(&param)
+
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
+		}
+		_, rows, err := uh.facilityUseCase.UpdateFacility(uint(id), param)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("updated facility failed"))
+		}
+		if rows == 0 {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("data not found"))
+		}
+		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("updated facility successfully"))
+	}
 }

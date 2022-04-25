@@ -24,3 +24,8 @@ func (cuc *FacilityUseCase) CreateFacility(request _entities.Facility) (_entitie
 	facility, err := cuc.facilityRepository.CreateFacility(request)
 	return facility, err
 }
+
+func (cuc *FacilityUseCase) UpdateFacility(id uint, request _entities.Facility) (_entities.Facility, int, error) {
+	facility, rows, err := cuc.facilityRepository.UpdateFacility(id, request)
+	return facility, rows, err
+}
