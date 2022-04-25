@@ -121,3 +121,25 @@ func (uuc *UserUseCase) RequestOwner(id int, certificate string, requestOwner _e
 	row, err := uuc.userRepository.RequestOwner(user)
 	return row, err
 }
+
+func (uuc *UserUseCase) GetListUsers() ([]_entities.ListUsersResponse, error) {
+	listUsersResponse := []_entities.ListUsersResponse{}
+	users, err := uuc.userRepository.GetListUsers()
+
+	if err != nil {
+		return listUsersResponse, err
+	}
+	copier.Copy(&listUsersResponse, &users)
+	return listUsersResponse, nil
+}
+
+func (uuc *UserUseCase) GetListOwners() ([]_entities.ListOwnersResponse, error) {
+	listOwnersResponse := []_entities.ListOwnersResponse{}
+	owners, err := uuc.userRepository.GetListOwners()
+
+	if err != nil {
+		return listOwnersResponse, err
+	}
+	copier.Copy(&listOwnersResponse, &owners)
+	return listOwnersResponse, nil
+}

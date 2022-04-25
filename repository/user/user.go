@@ -84,3 +84,21 @@ func (ur *UserRepository) RequestOwner(requestOwner _entities.User) (int, error)
 	}
 	return int(tx.RowsAffected), nil
 }
+
+func (ur *UserRepository) GetListUsers() ([]_entities.User, error) {
+	var users []_entities.User
+	tx := ur.DB.Find(&users)
+	if tx.Error != nil {
+		return users, tx.Error
+	}
+	return users, nil
+}
+
+func (ur *UserRepository) GetListOwners() ([]_entities.User, error) {
+	var users []_entities.User
+	tx := ur.DB.Where("status = ?", "approved").Find(&users)
+	if tx.Error != nil {
+		return users, tx.Error
+	}
+	return users, nil
+}

@@ -21,6 +21,8 @@ func RegisterUserPath(e *echo.Echo, uh _userHandler.UserHandler) {
 	e.PUT("/users/image/:userId", uh.UpdateUserImageHandler(), _middlewares.JWTMiddleware())
 	e.GET("/users/profile", uh.GetUserProfile(), _middlewares.JWTMiddleware())
 	e.PUT("/owners/request", uh.RequestOwnerHandler(), _middlewares.JWTMiddleware())
+	e.GET("/lists/users", uh.GetListUsersHandler(), _middlewares.JWTMiddleware())
+	e.GET("/lists/owners", uh.GetLIstOwnersHandler(), _middlewares.JWTMiddleware())
 }
 
 func RegisterCategoryPath(e *echo.Echo, uh _categoryHandler.CategoryHandler) {
