@@ -211,3 +211,35 @@ func (uh *UserHandler) RequestOwnerHandler() echo.HandlerFunc {
 		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("Success to request for being owner"))
 	}
 }
+
+func (uh *UserHandler) GetListUsersHandler() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		// check login status
+		_, errToken := _middlewares.ExtractToken(c)
+		if errToken != nil {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
+		//call GetListUsers function
+		listUsers, err := uh.userUseCase.GetListUsers()
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to get all users"))
+		}
+		return c.JSON(http.StatusOK, helper.ResponseSuccess("success to get all users", listUsers))
+	}
+}
+
+func (uh *UserHandler) GetLIstOwnersHandler() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		// check login status
+		_, errToken := _middlewares.ExtractToken(c)
+		if errToken != nil {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
+		//call GetListOwner function
+		listOwners, err := uh.userUseCase.GetListOwners()
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to get all owners"))
+		}
+		return c.JSON(http.StatusOK, helper.ResponseSuccess("success to get all owners", listOwners))
+	}
+}

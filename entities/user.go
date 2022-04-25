@@ -30,3 +30,21 @@ type UserResponse struct {
 	BusinessCertificate string `json:"business_certificate" form:"business_certificate"`
 	Status              string `json:"status" form:"status"`
 }
+
+type ListUsersResponse struct {
+	gorm.Model
+	FullName    string `gorm:"not null" json:"fullname" form:"fullname"`
+	Username    string `gorm:"not null;unique" json:"username" form:"username"`
+	Email       string `gorm:"not null;unique" json:"email" form:"email"`
+	PhoneNumber string `gorm:"not null" json:"phone_number" form:"phone_number"`
+	Image       string `json:"image" form:"image"`
+}
+
+type ListOwnersResponse struct {
+	gorm.Model
+	FullName     string     `gorm:"not null" json:"fullname" form:"fullname"`
+	Username     string     `gorm:"not null;unique" json:"username" form:"username"`
+	Image        string     `json:"image" form:"image"`
+	BusinessName string     `json:"business_name" form:"business_name"`
+	Venues       []Category `gorm:"foreignKey:UserID;references:ID" json:"venue" form:"venue"`
+}
