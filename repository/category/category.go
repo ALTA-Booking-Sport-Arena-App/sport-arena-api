@@ -42,3 +42,13 @@ func (ur *CategoryRepository) UpdateCategory(id uint, request _entities.Category
 	}
 	return request, int(tx.RowsAffected), nil
 }
+
+func (ur *CategoryRepository) DeleteCategory(id int) error {
+
+	err := ur.DB.Unscoped().Delete(&_entities.Category{}, id).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
