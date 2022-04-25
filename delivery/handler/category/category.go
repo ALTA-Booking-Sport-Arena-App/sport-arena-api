@@ -80,3 +80,17 @@ func (uh *CategoryHandler) UpdateCategoryHandler() echo.HandlerFunc {
 		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("updated category successfully"))
 	}
 }
+
+func (uh *CategoryHandler) DeleteCategoryHandler() echo.HandlerFunc {
+
+	return func(c echo.Context) error {
+
+		id, _ := strconv.Atoi(c.Param("id"))
+
+		err := uh.categoryUseCase.DeleteCategory(id)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("deleted category failed"))
+		}
+		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("deleted category successfully"))
+	}
+}

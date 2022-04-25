@@ -29,3 +29,8 @@ func (uuc *CategoryUseCase) UpdateCategory(id uint, request _entities.Category) 
 	category, rows, err := uuc.categoryRepository.UpdateCategory(id, request)
 	return category, rows, err
 }
+
+func (uuc *CategoryUseCase) DeleteCategory(id int) error {
+	err := uuc.categoryRepository.DeleteCategory(id)
+	return err
+}
