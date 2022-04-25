@@ -34,3 +34,11 @@ func (ur *CategoryRepository) CreateCategory(request _entities.Category) (_entit
 
 	return request, nil
 }
+
+func (ur *CategoryRepository) UpdateCategory(id uint, request _entities.Category) (_entities.Category, int, error) {
+	tx := ur.DB.Model(&_entities.Category{}).Where("id = ?", id).Updates(request)
+	if tx.Error != nil {
+		return request, 0, tx.Error
+	}
+	return request, int(tx.RowsAffected), nil
+}
