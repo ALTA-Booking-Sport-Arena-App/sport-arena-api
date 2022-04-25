@@ -48,10 +48,10 @@ func (uh *CategoryHandler) CreateCategoryHandler() echo.HandlerFunc {
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
 		}
-		projects, err := uh.categoryUseCase.CreateCategory(param)
+		_, err = uh.categoryUseCase.CreateCategory(param)
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("created category failed"))
 		}
-		return c.JSON(http.StatusOK, helper.ResponseSuccess("success create task", projects))
+		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("created category successfully"))
 	}
 }
