@@ -6,5 +6,6 @@ import (
 
 type Category struct {
 	gorm.Model
-	Name string `json:"name" form:"name"`
+	Name     string `json:"name" form:"name"`
+	IconName string `json:"icon_name" form:"icon_name"`
 }
