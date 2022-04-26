@@ -19,11 +19,12 @@ func JWTMiddleware() echo.MiddlewareFunc {
 }
 
 //fungsi untuk men generate token
-func CreateToken(id int, name string) (string, error) {
+func CreateToken(id int, name, role string) (string, error) {
 	claims := jwt.MapClaims{}
 	claims["authorized"] = true
 	claims["id"] = id
 	claims["name"] = name
+	claims["role"] = role
 	claims["exp"] = time.Now().Add(time.Hour * 200).Unix() //Token expires after 200 hour
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(secretjwt))
@@ -37,4 +38,14 @@ func ExtractToken(c echo.Context) (int, error) {
 		return id, nil
 	}
 	return -1, fmt.Errorf("unauthorized")
+}
+
+func ExtractRole(c echo.Context) (string, error) {
+	loginToken := c.Get("user").(*jwt.Token)
+	if loginToken.Valid {
+		claims := loginToken.Claims.(jwt.MapClaims)
+		role := claims["role"].(string)
+		return role, nil
+	}
+	return "", fmt.Errorf("unauthorized")
 }
