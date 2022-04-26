@@ -219,6 +219,14 @@ func (uh *UserHandler) GetListUsersHandler() echo.HandlerFunc {
 		if errToken != nil {
 			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
 		}
+		// check role
+		role, errRole := _middlewares.ExtractRole(c)
+		if errRole != nil {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
+		if role != "admin" {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
 		//call GetListUsers function
 		listUsers, err := uh.userUseCase.GetListUsers()
 		if err != nil {
@@ -233,6 +241,14 @@ func (uh *UserHandler) GetLIstOwnersHandler() echo.HandlerFunc {
 		// check login status
 		_, errToken := _middlewares.ExtractToken(c)
 		if errToken != nil {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
+		// check role
+		role, errRole := _middlewares.ExtractRole(c)
+		if errRole != nil {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
+		if role != "admin" {
 			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
 		}
 		//call GetListOwner function
@@ -250,6 +266,14 @@ func (uh *UserHandler) ApproveOwnerRequestHandler() echo.HandlerFunc {
 		// check login status
 		_, errToken := _middlewares.ExtractToken(c)
 		if errToken != nil {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
+		// check role
+		role, errRole := _middlewares.ExtractRole(c)
+		if errRole != nil {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
+		if role != "admin" {
 			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
 		}
 		// binding request data
@@ -271,6 +295,14 @@ func (uh *UserHandler) RejectOwnerRequestHandler() echo.HandlerFunc {
 		// check login status
 		_, errToken := _middlewares.ExtractToken(c)
 		if errToken != nil {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
+		// check role
+		role, errRole := _middlewares.ExtractRole(c)
+		if errRole != nil {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
+		if role != "admin" {
 			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
 		}
 		// binding request data
