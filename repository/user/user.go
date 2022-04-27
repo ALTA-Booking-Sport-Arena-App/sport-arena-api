@@ -119,7 +119,7 @@ func (ur *UserRepository) GetListUsers() ([]_entities.User, error) {
 
 func (ur *UserRepository) GetListOwners() ([]_entities.User, error) {
 	var users []_entities.User
-	tx := ur.DB.Not("role = ?", "admin").Where("status = ?", "approve").Find(&users)
+	tx := ur.DB.Preload("Venues").Not("role = ?", "admin").Where("status = ?", "approve").Find(&users)
 	if tx.Error != nil {
 		return users, tx.Error
 	}
