@@ -332,3 +332,31 @@ func (uh *UserHandler) RejectOwnerRequestHandler() echo.HandlerFunc {
 		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("verification reject successfully"))
 	}
 }
+
+func (uh *UserHandler) UpdateAdminHandler() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		var request _entities.User
+		// check login status
+		id, errToken := _middlewares.ExtractToken(c)
+		if errToken != nil {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
+		// check role
+		role, errRole := _middlewares.ExtractRole(c)
+		if errRole != nil {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
+		if role != "admin" {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
+		errBind := c.Bind(&request)
+		if errBind != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(errBind.Error()))
+		}
+		err := uh.userUseCase.UpdateAdmin(id, request)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("updated password failed"))
+		}
+		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("updated password successfully"))
+	}
+}

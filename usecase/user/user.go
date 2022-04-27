@@ -4,6 +4,7 @@ import (
 	"capstone/delivery/helper"
 	_entities "capstone/entities"
 	_userRepository "capstone/repository/user"
+	"fmt"
 
 	"github.com/jinzhu/copier"
 )
@@ -47,6 +48,9 @@ func (uuc *UserUseCase) UpdateUser(id int, request _entities.User) (_entities.Us
 	}
 	if rows == 0 {
 		return user, 0, err
+	}
+	if request.Password == "" && request.FullName == "" && request.Username == "" && request.Email == "" && request.PhoneNumber == "" {
+		return user, -1, err
 	}
 	if request.Password != "" {
 		password, _ := helper.HashPassword(request.Password)
@@ -97,7 +101,7 @@ func (uuc *UserUseCase) RequestOwner(id int, certificate string, requestOwner _e
 		return -1, err
 	}
 	user.BusinessCertificate = certificate
-	user.Status = "Pending"
+	user.Status = "pending"
 	row, err := uuc.userRepository.RequestOwner(user)
 	return row, err
 }
@@ -159,6 +163,30 @@ func (uuc *UserUseCase) RejectOwnerRequest(request _entities.User) error {
 		user.Status = request.Status
 	}
 	err1 := uuc.userRepository.ApproveOwnerRequest(user)
+	if err1 != nil {
+		return err1
+	}
+	return nil
+}
+
+func (uuc *UserUseCase) UpdateAdmin(id int, request _entities.User) error {
+	user, rows, err := uuc.userRepository.GetUserById(id)
+	if err != nil {
+		return err
+	}
+	if rows == 0 {
+		return err
+	}
+	if helper.CheckPassHash(request.Password, user.Password) {
+		return fmt.Errorf("invalid password")
+	}
+	if request.Password != "" {
+		password, _ := helper.HashPassword(request.Password)
+		user.Password = password
+	} else if request.Password == "" {
+		return fmt.Errorf("invalid password")
+	}
+	err1 := uuc.userRepository.UpdateAdmin(id, user.Password)
 	if err1 != nil {
 		return err1
 	}
