@@ -1,7 +1,9 @@
 package user
 
 import (
+	"capstone/delivery/helper"
 	_entities "capstone/entities"
+	"errors"
 
 	"gorm.io/gorm"
 )
@@ -17,6 +19,25 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 }
 
 func (ur *UserRepository) CreateUser(request _entities.User) (_entities.User, error) {
+	if request.FullName == "" || request.FullName == " " {
+		return request, errors.New("Can't be empty")
+	}
+	if request.Email == "" || request.Email == " " {
+		return request, errors.New("Can't be empty")
+	}
+	if request.Password == "" || request.Password == " " {
+		return request, errors.New("Can't be empty")
+	}
+	if request.PhoneNumber == "" || request.PhoneNumber == " " {
+		return request, errors.New("Can't be empty")
+	}
+	if request.Username == "" || request.Username == " " {
+		return request, errors.New("Can't be empty")
+	}
+
+	password, _ := helper.HashPassword(request.Password)
+	request.Password = password
+
 	yx := ur.DB.Save(&request)
 	if yx.Error != nil {
 		return request, yx.Error

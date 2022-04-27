@@ -4,7 +4,7 @@ import "golang.org/x/crypto/bcrypt"
 
 func ResponseSuccess(message string, data interface{}) map[string]interface{} {
 	return map[string]interface{}{
-		"status":  "success",
+		"code":    200,
 		"message": message,
 		"data":    data,
 	}
@@ -12,14 +12,14 @@ func ResponseSuccess(message string, data interface{}) map[string]interface{} {
 
 func ResponseSuccessWithoutData(message string) map[string]interface{} {
 	return map[string]interface{}{
-		"status":  "success",
+		"code":    200,
 		"message": message,
 	}
 }
 
 func ResponseFailed(message string) map[string]interface{} {
 	return map[string]interface{}{
-		"status":  "failed",
+		"code":    400,
 		"message": message,
 	}
 }
