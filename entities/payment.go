@@ -20,8 +20,8 @@ type Payment struct {
 	PaymentLink   PaymentLink `gorm:"foreignKey:PaymentLinkID;references:ID" json:"payment_link" form:"payment_link"`
 }
 
-type PaymentResponse struct {
-	ID     uint          `gorm:"primaryKey" json:"id" form:"id"`
-	Status string        `json:"status" form:"status"`
-	Venue  VenueResponse `json:"venue" form:"venue"`
-}
+// type PaymentResponse struct {
+// 	ID     uint          `gorm:"primaryKey" json:"id" form:"id"`
+// 	Status string        `json:"status" form:"status"`
+// 	Venue  VenueResponse `json:"venue" form:"venue"`
+// }
