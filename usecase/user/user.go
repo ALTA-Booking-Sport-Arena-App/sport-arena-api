@@ -4,7 +4,6 @@ import (
 	"capstone/delivery/helper"
 	_entities "capstone/entities"
 	_userRepository "capstone/repository/user"
-	"errors"
 
 	"github.com/jinzhu/copier"
 )
@@ -32,26 +31,7 @@ func (uuc *UserUseCase) GetUserProfile(id int) (_entities.UserResponse, error) {
 }
 
 func (uuc *UserUseCase) CreateUser(request _entities.User) (_entities.User, error) {
-	password, _ := helper.HashPassword(request.Password)
-	request.Password = password
 	users, err := uuc.userRepository.CreateUser(request)
-
-	if request.FullName == "" {
-		return users, errors.New("Can't be empty")
-	}
-	if request.Email == "" {
-		return users, errors.New("Can't be empty")
-	}
-	if request.Password == "" {
-		return users, errors.New("Can't be empty")
-	}
-	if request.PhoneNumber == "" {
-		return users, errors.New("Can't be empty")
-	}
-	if request.Username == "" {
-		return users, errors.New("Can't be empty")
-	}
-
 	return users, err
 }
 
