@@ -20,19 +20,19 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 
 func (ur *UserRepository) CreateUser(request _entities.User) (_entities.User, error) {
 	if request.FullName == "" || request.FullName == " " {
-		return request, errors.New("Can't be empty")
+		return request, errors.New("can't be empty")
 	}
 	if request.Email == "" || request.Email == " " {
-		return request, errors.New("Can't be empty")
+		return request, errors.New("can't be empty")
 	}
 	if request.Password == "" || request.Password == " " {
-		return request, errors.New("Can't be empty")
+		return request, errors.New("can't be empty")
 	}
 	if request.PhoneNumber == "" || request.PhoneNumber == " " {
-		return request, errors.New("Can't be empty")
+		return request, errors.New("can't be empty")
 	}
 	if request.Username == "" || request.Username == " " {
-		return request, errors.New("Can't be empty")
+		return request, errors.New("can't be empty")
 	}
 
 	password, _ := helper.HashPassword(request.Password)
@@ -137,6 +137,18 @@ func (ur *UserRepository) ApproveOwnerRequest(request _entities.User) error {
 func (ur *UserRepository) RejectOwnerRequest(request _entities.User) error {
 	tx := ur.DB.Save(&request)
 	if tx.Error != nil {
+		return tx.Error
+	}
+	return nil
+}
+
+func (ur *UserRepository) UpdateAdmin(id int, password string) error {
+	var users _entities.User
+	tx := ur.DB.Model(&users).Where("id = ?", id).Update("password", password)
+	if tx.Error != nil {
+		return tx.Error
+	}
+	if tx.RowsAffected == 0 {
 		return tx.Error
 	}
 	return nil
