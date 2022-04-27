@@ -26,6 +26,10 @@ import (
 	_facilityRepository "capstone/repository/facility"
 	_facilityUseCase "capstone/usecase/facility"
 
+	_venueHandler "capstone/delivery/handler/venue"
+	_venueRepository "capstone/repository/venue"
+	_venueUseCase "capstone/usecase/venue"
+
 	_middleware "capstone/delivery/middlewares"
 	_utils "capstone/utils"
 )
@@ -50,6 +54,10 @@ func main() {
 	facilityUseCase := _facilityUseCase.NewFacilityUseCase(facilityRepo)
 	facilityHandler := _facilityHandler.NewFacilityHandler(facilityUseCase)
 
+	venueRepo := _venueRepository.NewVenueRepository(db)
+	venueUseCase := _venueUseCase.NewVenueUseCase(venueRepo)
+	venueHandler := _venueHandler.NewVenueHandler(venueUseCase)
+
 	e := echo.New()
 	e.Use(middleware.CORS())
 	e.Pre(middleware.RemoveTrailingSlash())
@@ -63,6 +71,7 @@ func main() {
 	_routes.RegisterAuthPath(e, authHandler)
 	_routes.RegisterCategoryPath(e, categoryHandler)
 	_routes.RegisterFacilityPath(e, facilityHandler)
+	_routes.RegisterVenuePath(e, venueHandler)
 
 	log.Fatal(e.Start(fmt.Sprintf(":%v", config.Port)))
 }

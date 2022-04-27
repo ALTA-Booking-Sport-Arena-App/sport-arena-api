@@ -5,6 +5,7 @@ import (
 	_categoryHandler "capstone/delivery/handler/category"
 	_facilityHandler "capstone/delivery/handler/facility"
 	_userHandler "capstone/delivery/handler/user"
+	_venueHandler "capstone/delivery/handler/venue"
 	_middlewares "capstone/delivery/middlewares"
 
 	"github.com/labstack/echo/v4"
@@ -39,4 +40,8 @@ func RegisterFacilityPath(e *echo.Echo, uh _facilityHandler.FacilityHandler) {
 	e.POST("/facility", uh.CreateFacilityHandler(), _middlewares.JWTMiddleware())
 	e.PUT("/facility/:id", uh.UpdateFacilityHandler(), _middlewares.JWTMiddleware())
 	e.DELETE("/facility/:id", uh.DeleteFacilityHandler(), _middlewares.JWTMiddleware())
+}
+
+func RegisterVenuePath(e *echo.Echo, uh _venueHandler.VenueHandler) {
+	e.POST("/venues/step2", uh.CreateStep2Handler(), _middlewares.JWTMiddleware())
 }
