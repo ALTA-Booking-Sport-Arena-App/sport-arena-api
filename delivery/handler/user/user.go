@@ -157,10 +157,25 @@ func (uh *UserHandler) GetUserProfile() echo.HandlerFunc {
 		}
 
 		userProfile, err := uh.userUseCase.GetUserProfile(id)
+
+		responseUser := map[string]interface{}{
+			"id":                    userProfile.ID,
+			"fullname":              userProfile.FullName,
+			"username":              userProfile.Username,
+			"role":                  userProfile.Role,
+			"status":                userProfile.Status,
+			"email":                 userProfile.Email,
+			"image":                 userProfile.Image,
+			"phone_number":          userProfile.PhoneNumber,
+			"bussiness_name":        userProfile.BusinessName,
+			"bussiness_description": userProfile.BusinessDescription,
+			"bussiness_certificate": userProfile.BusinessCertificate,
+		}
+
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("Get user profile failed"))
 		}
-		return c.JSON(http.StatusOK, helper.ResponseSuccess("Successfully get user profile", userProfile))
+		return c.JSON(http.StatusOK, helper.ResponseSuccess("Successfully get user profile", responseUser))
 	}
 }
 
@@ -219,6 +234,14 @@ func (uh *UserHandler) GetListUsersHandler() echo.HandlerFunc {
 		if errToken != nil {
 			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
 		}
+		// check role
+		role, errRole := _middlewares.ExtractRole(c)
+		if errRole != nil {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
+		if role != "admin" {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
 		//call GetListUsers function
 		listUsers, err := uh.userUseCase.GetListUsers()
 		if err != nil {
@@ -233,6 +256,14 @@ func (uh *UserHandler) GetLIstOwnersHandler() echo.HandlerFunc {
 		// check login status
 		_, errToken := _middlewares.ExtractToken(c)
 		if errToken != nil {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
+		// check role
+		role, errRole := _middlewares.ExtractRole(c)
+		if errRole != nil {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
+		if role != "admin" {
 			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
 		}
 		//call GetListOwner function
@@ -250,6 +281,14 @@ func (uh *UserHandler) ApproveOwnerRequestHandler() echo.HandlerFunc {
 		// check login status
 		_, errToken := _middlewares.ExtractToken(c)
 		if errToken != nil {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
+		// check role
+		role, errRole := _middlewares.ExtractRole(c)
+		if errRole != nil {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
+		if role != "admin" {
 			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
 		}
 		// binding request data
@@ -271,6 +310,14 @@ func (uh *UserHandler) RejectOwnerRequestHandler() echo.HandlerFunc {
 		// check login status
 		_, errToken := _middlewares.ExtractToken(c)
 		if errToken != nil {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
+		// check role
+		role, errRole := _middlewares.ExtractRole(c)
+		if errRole != nil {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
+		if role != "admin" {
 			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
 		}
 		// binding request data

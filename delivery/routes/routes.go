@@ -4,6 +4,7 @@ import (
 	_authHandler "capstone/delivery/handler/auth"
 	_categoryHandler "capstone/delivery/handler/category"
 	_facilityHandler "capstone/delivery/handler/facility"
+	_paymentHandler "capstone/delivery/handler/payment"
 	_userHandler "capstone/delivery/handler/user"
 	_venueHandler "capstone/delivery/handler/venue"
 	_middlewares "capstone/delivery/middlewares"
@@ -44,4 +45,8 @@ func RegisterFacilityPath(e *echo.Echo, uh _facilityHandler.FacilityHandler) {
 
 func RegisterVenuePath(e *echo.Echo, uh _venueHandler.VenueHandler) {
 	e.POST("/venues/step2", uh.CreateStep2Handler(), _middlewares.JWTMiddleware())
+}
+
+func PaymentArenaPath(e *echo.Echo, ph _paymentHandler.PaymentHandler) {
+	e.GET("/histories", ph.GetAllHistoryHandler(), _middlewares.JWTMiddleware())
 }
