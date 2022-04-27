@@ -45,6 +45,7 @@ func RegisterFacilityPath(e *echo.Echo, uh _facilityHandler.FacilityHandler) {
 
 func RegisterVenuePath(e *echo.Echo, uh _venueHandler.VenueHandler) {
 	e.POST("/venues/step2", uh.CreateStep2Handler(), _middlewares.JWTMiddleware())
+	e.GET("/venues", uh.GetAllListHandler())
 }
 
 func PaymentArenaPath(e *echo.Echo, ph _paymentHandler.PaymentHandler) {

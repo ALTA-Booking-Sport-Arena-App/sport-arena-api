@@ -68,3 +68,15 @@ func (uh *VenueHandler) CreateStep2Handler() echo.HandlerFunc {
 	}
 
 }
+
+func (uh *VenueHandler) GetAllListHandler() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		//query param for searching venue
+		name := c.QueryParam("name")
+		getVenues, err := uh.venueUseCase.GetAllList(name)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to get venues"))
+		}
+		return c.JSON(http.StatusOK, helper.ResponseSuccess("success to get venues", getVenues))
+	}
+}
