@@ -20,3 +20,10 @@ type Venue struct {
 	Category      Category        `gorm:"foreignKey:CategoryID;references:ID" json:"category" form:"category"`
 	VenueFacility []VenueFacility `gorm:"foreignKey:VenueID;references:ID" json:"facility_id" form:"facility_id"`
 }
+
+type GetVenuesResponse struct {
+	ID       uint   `json:"id" form:"id"`
+	Name     string `json:"name" form:"name"`
+	Location string `json:"location" form:"location"`
+	Image    string `json:"image" form:"image"`
+}
