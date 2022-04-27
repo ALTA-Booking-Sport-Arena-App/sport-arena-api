@@ -157,10 +157,25 @@ func (uh *UserHandler) GetUserProfile() echo.HandlerFunc {
 		}
 
 		userProfile, err := uh.userUseCase.GetUserProfile(id)
+
+		responseUser := map[string]interface{}{
+			"id":                    userProfile.ID,
+			"fullname":              userProfile.FullName,
+			"username":              userProfile.Username,
+			"role":                  userProfile.Role,
+			"status":                userProfile.Status,
+			"email":                 userProfile.Email,
+			"image":                 userProfile.Image,
+			"phone_number":          userProfile.PhoneNumber,
+			"bussiness_name":        userProfile.BusinessName,
+			"bussiness_description": userProfile.BusinessDescription,
+			"bussiness_certificate": userProfile.BusinessCertificate,
+		}
+
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("Get user profile failed"))
 		}
-		return c.JSON(http.StatusOK, helper.ResponseSuccess("Successfully get user profile", userProfile))
+		return c.JSON(http.StatusOK, helper.ResponseSuccess("Successfully get user profile", responseUser))
 	}
 }
 

@@ -17,6 +17,12 @@ tags:
   - name: Login
   - name: Register
   - name: Users
+  - name: Admin
+  - name: Category
+  - name: Facility
+  - name: Venue
+  - name: Payment
+  - name: History
 paths:
   /login:
     post:
@@ -96,7 +102,6 @@ paths:
                 description: "Example data user"
                 value:
                   {
-                    ID: 1,
                     fullname: "adminbaruselesai",
                     username: "admin123",
                     email: "admin@mail.com",
@@ -107,7 +112,6 @@ paths:
                 description: "Example data user"
                 value:
                   {
-                    ID: 2,
                     fullname: "adminbaruselesai",
                     username: "admin123",
                     email: "admin@mail.com",
@@ -119,7 +123,6 @@ paths:
           $ref: "#/components/responses/registerUserSuccess"
         "400":
           $ref: "#/components/responses/registerUserFailed"
-
   /users/profile :
     get:
       tags:
@@ -188,6 +191,602 @@ paths:
           $ref: "#/components/responses/responseSuccess"
         "400":
           $ref: "#/components/responses/responseFailed"
+  /owners/request:
+    put:
+      tags:
+        - Users
+      description: Request to be owner
+      security:
+        - JWTAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                business_name:
+                  type: string
+                business_description:
+                  type: string
+                business_certificate:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          $ref: "#/components/responses/requestOwnerSuccess"
+        "400":
+          $ref: "#/components/responses/requestOwnerFailed"
+  /users/images/{userId}:
+    put:
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: integer
+          required: true
+      description: Edit User Profile by Token
+      security:
+        - JWTAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          $ref: "#/components/responses/editUserProfileSuccess"
+        "400":
+          $ref: "#/components/responses/editUserProfileFailed"
+  /verification/approve:
+    put:
+      tags:
+        - Admin
+      description: Owner Verification Approve
+      security:
+        - JWTAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  example: 1
+                role:
+                  type: string
+                  example: owner
+                status:
+                  type: string
+                  example: approve
+      responses:
+        "200":
+          $ref: "#/components/responses/verificationApproveSuccess"
+        "400":
+          $ref: "#/components/responses/verificationApproveFailed"
+  /verification/reject:
+    put:
+      tags:
+        - Admin
+      description: Owner Verification Reject
+      security:
+        - JWTAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  example: 1
+                status:
+                  type: string
+                  example: reject
+      responses:
+        "200":
+          $ref: "#/components/responses/verificationRejectSuccess"
+        "400":
+          $ref: "#/components/responses/verificationRejectFailed"
+  /admin/password:
+    put:
+      tags:
+        - Admin
+      description: Super Admin Change Password
+      security:
+        - JWTAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                  example: inipassword
+      responses:
+        "200":
+          $ref: "#/components/responses/updateSuperAdminSuccess"
+        "400":
+          $ref: "#/components/responses/updateSuperAdminFailed"
+  /lists/owners:
+    get:
+      tags:
+        - Admin
+      description: Get All users or owners
+      security:
+        - JWTAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/getAllOwnersSuccess"
+        "400":
+          $ref: "#/components/responses/getAllOwnersFailed"
+  /lists/users:
+    get:
+      tags:
+        - Admin
+      description: Get All users or owners
+      security:
+        - JWTAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/getAllOwnersSuccess"
+        "400":
+          $ref: "#/components/responses/getAllOwnersFailed"
+  /category:
+    post:
+      tags:
+        - Category
+      description: Create category
+      security:
+        - JWTAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: basketball
+                icon_name:
+                  type: string
+                  example: fa-solid fa-sportsball
+      responses:
+        "200":
+          $ref: "#/components/responses/createCategorySuccess"
+        "400":
+          $ref: "#/components/responses/createCategoryFailed"
+    get:
+      tags:
+        - Category
+      description: Get category
+      responses:
+        "200":
+          $ref: "#/components/responses/getAllCategorySuccess"
+        "400":
+          $ref: "#/components/responses/getAllCategoryFailed"
+  /category/{categoryId}:
+    put:
+      tags:
+        - Category
+      security:
+        - JWTAuth: []
+      parameters:
+        - in: path
+          name: categoryId
+          schema:
+            type: integer
+          required: true
+      description: Update category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 1
+                name:
+                  type: string
+                  example: basketball
+      responses:
+        "200":
+          $ref: "#/components/responses/updateCategorySuccess"
+        "400":
+          $ref: "#/components/responses/updateCategoryFailed"
+    delete:
+      tags:
+        - Category
+      parameters:
+        - in: path
+          name: categoryId
+          schema:
+            type: integer
+          required: true
+      description: Delete Category
+      security:
+        - JWTAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/deleteCategorySuccess"
+        "400":
+          $ref: "#/components/responses/deleteCategoryFailed"
+  /facility:
+    post:
+      tags:
+        - Facility
+      description: Create category
+      security:
+        - JWTAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: basketball
+                icon_name:
+                  type: string
+                  example: fa-solid fa-sportsball
+      responses:
+        "200":
+          $ref: "#/components/responses/createFacilitySuccess"
+        "400":
+          $ref: "#/components/responses/createFacilityFailed"
+    get:
+      tags:
+        - Facility
+      description: Get category
+      responses:
+        "200":
+          $ref: "#/components/responses/getAllFacilitySuccess"
+        "400":
+          $ref: "#/components/responses/getAllFacilityFailed"
+  /Facility/{facilityId}:
+    put:
+      tags:
+        - Facility
+      parameters:
+        - in: path
+          name: facilityId
+          schema:
+            type: integer
+          required: true
+      description: Update category
+      security:
+        - JWTAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 1
+                name:
+                  type: string
+                  example: basketball
+                icon_name:
+                  type: string
+                  example: fa-solid fa-sportsball
+      responses:
+        "200":
+          $ref: "#/components/responses/updateFacilitySuccess"
+        "400":
+          $ref: "#/components/responses/updateFacilityFailed"
+    delete:
+      tags:
+        - Facility
+      parameters:
+        - in: path
+          name: facilityId
+          schema:
+            type: integer
+          required: true
+      description: Delete Category
+      security:
+        - JWTAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/deleteFacilitySuccess"
+        "400":
+          $ref: "#/components/responses/deleteFacilityFailed"
+  /venues/step1: 
+    post:
+      tags:
+        - Venue
+      security:
+        - JWTAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                venue_name:
+                  type: string
+                detail:
+                  type: string
+                address:
+                  type: string
+                city:
+                  type: string
+                venue_photo:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          $ref: "#/components/responses/createVenueSuccess"
+        "400":
+          $ref: "#/components/responses/createVenueFailed"
+  /venues/step2:
+    post:
+      tags:
+        - Venue
+      security:
+        - JWTAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                venue_id:
+                  type: integer
+                  example: 1
+                days:
+                  type: array
+                  items:
+                    type: string
+                    example: senin
+                open_hours:
+                  type: string
+                  example: "2022-04-07T21:08:54.73+07:00"
+                close_hours:
+                  type: string
+                  example: "2022-04-07T21:08:54.73+07:00"
+                price:
+                  type: integer
+                  example: 200000
+                facility:
+                  type: array
+                  items:
+                    type: integer
+                    example: 1
+      responses:
+        "200":
+          $ref: "#/components/responses/createVenueSuccess"
+        "400":
+          $ref: "#/components/responses/createVenueFailed"
+  /venues:
+    get:
+      tags:
+        - Venue
+      responses:
+        "200":
+          $ref: "#/components/responses/getAllVenueSuccess"
+        "400":
+          $ref: "#/components/responses/getAllVenueFailed"
+  /venues/{venueId}:
+    get:
+      tags:
+        - Venue
+      description: Get Venue By Id
+      parameters:
+        - name: venueId
+          description: Get Venue By Id
+          in: path
+          schema:
+            type: integer
+            example: 1
+          required: true
+      responses:
+        "200":
+          $ref: "#/components/responses/getVenueByIdSuccess"
+        "400":
+          $ref: "#/components/responses/getVenueByIdFailed"
+    delete:
+      tags:
+        - Venue
+      parameters:
+        - in: path
+          name: venueId
+          schema:
+            type: integer
+          required: true
+      description: Delete Venue
+      security:
+        - JWTAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/deleteVenueSuccess"
+        "400":
+          $ref: "#/components/responses/deleteVenueFailed"
+  /venues/step1/{venueId}:
+    put:
+      tags:
+        - Venue
+      parameters:
+        - in: path
+          name: venueId
+          schema:
+            type: integer
+          required: true
+      security:
+        - JWTAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                venue_name:
+                  type: string
+                detail:
+                  type: string
+                address:
+                  type: string
+                city:
+                  type: string
+                venue_photo:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          $ref: "#/components/responses/updateVenueSuccess"
+        "400":
+          $ref: "#/components/responses/updateVenueFailed"
+  /venues/step2/{venueId}:
+    put:
+      tags:
+        - Venue
+      parameters:
+        - in: path
+          name: venueId
+          schema:
+            type: integer
+          required: true
+      security:
+        - JWTAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                venue_id:
+                  type: integer
+                  example: 1
+                days:
+                  type: array
+                  items:
+                    type: string
+                    example: senin
+                open_hours:
+                  type: string
+                  example: "2022-04-07T21:08:54.73+07:00"
+                close_hours:
+                  type: string
+                  example: "2022-04-07T21:08:54.73+07:00"
+                price:
+                  type: integer
+                  example: 200000
+                facility:
+                  type: array
+                  items:
+                    type: integer
+                    example: 1
+      responses:
+        "200":
+          $ref: "#/components/responses/updateVenueSuccess"
+        "400":
+          $ref: "#/components/responses/updateVenueFailed"
+  /booking:
+    post:
+      tags:
+        - Payment
+      security:
+        - JWTAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                venue_id:
+                  type: integer
+                  example: 1
+                price:
+                  type: integer
+                  example: 12000
+                status:
+                  type: string
+                  example: pending
+                start_date:
+                  type: string
+                  example: "2022-04-07T21:08:54.73+07:00"
+                end_date:
+                  type: string
+                  example: "2022-04-07T21:08:54.73+07:00"
+      responses:
+        "200":
+          $ref: "#/components/responses/createBookingSuccess"
+        "400":
+          $ref: "#/components/responses/createBookingFailed"
+  /payment:
+    put:
+      tags:
+        - Payment
+      security:
+        - JWTAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  example: 1
+                venue_id:
+                  type: integer
+                  example: 2
+                payment_link:
+                  type: object
+                  properties:
+                    secret_key:
+                      type: string
+                      example: 123
+                    code:
+                      type: string
+                      example: dana
+                start_date:
+                  type: string
+                  example: "2022-04-07T21:08:54.73+07:00"
+                end_date:
+                  type: string
+                  example: "2022-04-07T21:08:54.73+07:00"
+                price:
+                  type: integer
+                  example: 120000
+      responses:
+        "200":
+          $ref: "#/components/responses/createPaymentSuccess"
+        "400":
+          $ref: "#/components/responses/createPaymentFailed"
+  /histories:
+    get:
+      tags:
+        - History
+      security:
+        - JWTAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/getAllVenueHistorySuccess"
+        "400":
+          $ref: "#/components/responses/getAllVenueHistoryFailed"
+
 #==================================#
 #    COMPONENT
 #==================================#
@@ -232,6 +831,44 @@ components:
         "password":
           type: string
           example: admin
+    RequestVenueData:
+      type: object
+      properties:
+        "venue_name":
+          type: string
+          example: admin123
+        "detail":
+          type: string
+          example: admin
+        "address":
+          type: string
+          example: admin@mail.com
+        "city":
+          type: string
+          example: "Jakarta"
+        "venue_photo":
+          type: string
+          format: binary
+          example: admin
+        "days":
+          type: array
+          default: ["senin", "selasa"]
+          items:
+            type: string
+        "open_hour":
+          type: string
+          example: "2022-04-07T21:08:54.73+07:00"
+        "close_hour":
+          type: string
+          example: "2022-04-07T21:08:54.73+07:00"
+        "price":
+          type: integer
+          example: 200000
+        "facility":
+          type: array
+          default: [1, 3]
+          items:
+            type: integer
     #==================================#
     #    RESPONSE USER
     #==================================#
@@ -243,9 +880,9 @@ components:
           schema:
             type: object
             properties:
-              code:
-                type: integer
-                example: 200
+              status:
+                type: string
+                example: success
               message:
                 type: string
                 example: success delete user
@@ -256,9 +893,9 @@ components:
           schema:
             type: object
             properties:
-              code:
-                type: integer
-                example: 400
+              status:
+                type: string
+                example: failed
               message:
                 type: string
                 example: failed delete user
@@ -269,9 +906,9 @@ components:
           schema:
             type: object
             properties:
-              code:
-                type: integer
-                example: 200
+              status:
+                type: string
+                example: success
               message:
                 type: string
                 example: register successfully
@@ -282,9 +919,9 @@ components:
           schema:
             type: object
             properties:
-              code:
-                type: integer
-                example: 400
+              status:
+                type: string
+                example: failed
               message:
                 type: string
                 example: register failed
@@ -295,42 +932,45 @@ components:
           schema:
             type: object
             properties:
-              data_user:
+              data:
                 type: object
                 properties:
-                  ID:
+                  id:
                     type: integer
                     example: 1
-                  CreatedAt:
-                    type: string
-                    example: "2022-04-07T21:08:54.73+07:00"
-                  UpdatedAt:
-                    type: string
-                    example: "2022-04-07T21:08:54.73+07:00"
                   fullname:
                     type: string
                     example: sepatu baru beli
                   username:
                     type: string
                     example: sepatu
+                  role:
+                    type: string
+                    example: user
+                  status:
+                    type: string
+                    example: owner
                   email:
                     type: string
                     example: sepatu@mail.com
+                  image:
+                    type: string
+                    example: image
                   phone_number:
                     type: string
                     example: 082333444555
                   bussiness_name:
                     type: string
                     example: name bussiness
-                  bussiness_type:
+                  bussiness_description:
                     type: string
-                    example: name type
-                  bussiness_terms:
+                    example: This is a bussiness description
+                  bussiness_certificate:
                     type: string
                     example: terms certificate
-              code:
-                type: integer
-                example: 200
+              status:
+                type: string
+                example: success
               message:
                 type: string
                 example: success get user profile
@@ -341,9 +981,9 @@ components:
           schema:
             type: object
             properties:
-              code:
-                type: integer
-                example: 400
+              status:
+                type: string
+                example: failed
               message:
                 type: string
                 example: failed get user profile
@@ -354,9 +994,9 @@ components:
           schema:
             type: object
             properties:
-              code:
-                type: integer
-                example: 200
+              status:
+                type: string
+                example: success
               message:
                 type: string
                 example: success edit user profile
@@ -367,9 +1007,756 @@ components:
           schema:
             type: object
             properties:
-              code:
-                type: integer
-                example: 400
+              status:
+                type: string
+                example: failed
               message:
                 type: string
                 example: failed edit user profile
+    createVenueSuccess:
+      description: success to create venue
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: create venue successfully
+    createVenueFailed:
+      description: failed to create venue
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: failed
+              message:
+                type: string
+                example: create venue failed
+    getAllVenueSuccess:
+      description: Operation Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    venue_name:
+                      type: string
+                      example: venue name
+                    location:
+                      type: string
+                      example: Jakarta
+                    price:
+                      type: integer
+                      example: 10000
+                    image:
+                      type: string
+                      example: image                    
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: success to get venues
+    getAllVenueFailed:
+      description: failed to get venues
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: failed
+              message:
+                type: string
+                example: failed to get venues
+    getAllVenueHistorySuccess:
+      description: Operation Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    venue:
+                      type: object
+                      properties:
+                        venue_name:
+                          type: string
+                          example: Stadion Jakabaring
+                        location:
+                          type: string
+                          example: Palembang
+                        price:
+                          type: integer
+                          example: 10000
+                        image:
+                          type: string
+                          example: https://unsplash.com/photos/tKHrQh9Ezjw 
+                        status:
+                          type: string
+                          example: booked 
+                        date:
+                          type: string
+                          example: "2022-04-07T21:08:54.73+07:00"
+                        hours:
+                          type: string
+                          example: 09:00 - 10:00
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: success to get all venues history
+    getAllVenueHistoryFailed:
+      description: failed to get venues history
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: failed
+              message:
+                type: string
+                example: failed to get venues history
+    requestOwnerSuccess:
+      description: success to request for being owner
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: success to request for being owner
+    requestOwnerFailed:
+      description: failed to request for being owner
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: failed
+              message:
+                type: string
+                example: failed to request for being owner
+    verificationApproveSuccess:
+      description: verification approved successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: verification approved successfully
+    verificationApproveFailed:
+      description: verification approved failed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: failed
+              message:
+                type: string
+                example: verification approved failed
+    verificationRejectSuccess:
+      description: verification reject successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: verification reject successfully
+    verificationRejectFailed:
+      description: verification reject failed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: failed
+              message:
+                type: string
+                example: verification reject failed
+    getAllOwnersSuccess:
+      description: success to get all owners
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    username:
+                      type: string
+                      example: John Ajib
+                    business_name:
+                      type: string
+                      example: Business Ajib
+                    venue:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          venue_name:
+                            type: string
+                            example: Stadion Jakabaring
+                          location:
+                            type: string
+                            example: Palembang
+                          price:
+                            type: integer
+                            example: 10000
+                          image:
+                            type: string
+                            example: https://unsplash.com/photos/tKHrQh9Ezjw 
+                          status:
+                            type: string
+                            example: booked 
+                          date:
+                            type: string
+                            example: "2022-04-07T21:08:54.73+07:00"
+                          hours:
+                            type: string
+                            example: 09:00 - 10:00
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: success to get all owners
+    getAllOwnersFailed:
+      description: failed to get all owners
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: failed
+              message:
+                type: string
+                example: failed to get all owners
+    createCategorySuccess:
+      description: created category successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: created category successfully
+    createCategoryFailed:
+      description: created category failed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: failed
+              message:
+                type: string
+                example: created category failed
+    getAllCategorySuccess:
+      description: success to get all categories
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    name:
+                      type: string
+                      example: Basketball
+                    icon_name:
+                      type: string
+                      example: fa-solid fa-baskteball
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: success to get all categories
+    getAllCategoryFailed:
+      description: failed to get all categories
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: failed
+              message:
+                type: string
+                example: failed to get all categories
+    updateCategorySuccess:
+      description: updated category successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: updated category successfully
+    updateCategoryFailed:
+      description: updated category failed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: failed
+              message:
+                type: string
+                example: updated category failed
+    deleteCategorySuccess:
+      description: deleted category successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: deleted category successfully
+    deleteCategoryFailed:
+      description: deleted category failed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: failed
+              message:
+                type: string
+                example: deleted category failed
+    createFacilitySuccess:
+      description: created facility successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: created facility successfully
+    createFacilityFailed:
+      description: created facility failed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: created facility failed
+    getAllFacilitySuccess:
+      description: success to get all facilities
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    name:
+                      type: string
+                      example: Basketball
+                    icon_name:
+                      type: string
+                      example: fa-solid fa-sportsball
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: success to get all facilities
+    getAllFacilityFailed:
+      description: failed to get all facilities
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: failed
+              message:
+                type: string
+                example: failed to get all facilities
+    updateFacilitySuccess:
+      description: updated facility successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: updated facility successfully
+    updateFacilityFailed:
+      description: updated facility failed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: failed
+              message:
+                type: string
+                example: updated facility failed
+    deleteFacilitySuccess:
+      description: deleted facility successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: deleted facility successfully
+    deleteFacilityFailed:
+      description: deleted facility failed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: failed
+              message:
+                type: string
+                example: deleted facility failed
+    updateVenueSuccess:
+      description: updated venue successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: updated venue successfully
+    updateVenueFailed:
+      description: updated venue failed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: failed
+              message:
+                type: string
+                example: updated venue failed
+    deleteVenueSuccess:
+      description: deleted venue successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: deleted venue successfully
+    deleteVenueFailed:
+      description: deleted venue failed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: failed
+              message:
+                type: string
+                example: deleted venue failed
+    updateSuperAdminSuccess:
+      description: updated password successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: updated password successfully
+    updateSuperAdminFailed:
+      description: updated password failed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: failed
+              message:
+                type: string
+                example: updated password failed
+    getVenueByIdSuccess:
+      description: Operation Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  name:
+                    type: string
+                    example: Stadion Gelora Bung Karno
+                  image:
+                    type: string
+                    example: https://unsplash.com/photos/kzduobHvW0o
+                  address:
+                    type: string
+                    example: Kota Jakarta Pusat, DKI Jakarta
+                  city:
+                    type: string
+                    example: Jakartas
+                  facility:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: baseball
+                        icon_name:
+                          type: string
+                          example: fa-solid fa-baseball
+                  category:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: baseball
+                  operational_hours:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      days:
+                        type: array
+                        items:
+                          example: senin
+                      open_hour:
+                        type: string
+                        example: "2022-04-07T21:08:54.73+07:00"
+                      close_hour:
+                        type: string
+                        example: "2022-04-07T21:08:54.73+07:00"
+                      price:
+                        type: integer
+                        example: 200000
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: success get venue by id
+    getVenueByIdFailed:
+      description: get venue by id failed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: failed
+              message:
+                type: string
+                example: get venue by id failed
+    createPaymentSuccess:
+      description: created payment successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: created payment successfully
+    createPaymentFailed:
+      description: created payment failed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: failed
+              message:
+                type: string
+                example: created payment failed
+    createBookingSuccess:
+      description: Operation Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  venue_id:
+                    type: integer
+                    example: 1
+                  price:
+                    type: integer
+                    example: 12000
+                  status:
+                    type: string
+                    example: pending
+                  start_date:
+                    type: string
+                    example: "2022-04-07T21:08:54.73+07:00"
+                  end_date:
+                    type: string
+                    example: "2022-04-07T21:08:54.73+07:00"               
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: success to create booking
+    createBookingFailed:
+      description: created booking failed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: failed
+              message:
+                type: string
+                example: created booking failed

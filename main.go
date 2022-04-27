@@ -10,8 +10,11 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 
 	_authHandler "capstone/delivery/handler/auth"
+	_paymentHandler "capstone/delivery/handler/payment"
 	_authRepository "capstone/repository/auth"
+	_paymentRepo "capstone/repository/payment"
 	_authUseCase "capstone/usecase/auth"
+	_paymentUseCase "capstone/usecase/payment"
 
 	_userHandler "capstone/delivery/handler/user"
 	_routes "capstone/delivery/routes"
@@ -50,6 +53,10 @@ func main() {
 	facilityUseCase := _facilityUseCase.NewFacilityUseCase(facilityRepo)
 	facilityHandler := _facilityHandler.NewFacilityHandler(facilityUseCase)
 
+	paymentRepo := _paymentRepo.NewPaymentRepository(db)
+	paymentUseCase := _paymentUseCase.NewFacilityUseCase(paymentRepo)
+	paymentHandler := _paymentHandler.NewFacilityHandler(paymentUseCase)
+
 	e := echo.New()
 	e.Use(middleware.CORS())
 	e.Pre(middleware.RemoveTrailingSlash())
@@ -63,6 +70,7 @@ func main() {
 	_routes.RegisterAuthPath(e, authHandler)
 	_routes.RegisterCategoryPath(e, categoryHandler)
 	_routes.RegisterFacilityPath(e, facilityHandler)
+	_routes.PaymentArenaPath(e, paymentHandler)
 
 	log.Fatal(e.Start(fmt.Sprintf(":%v", config.Port)))
 }
