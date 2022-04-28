@@ -32,13 +32,13 @@ func (uh *UserHandler) CreateUserHandler() echo.HandlerFunc {
 
 		errBind := c.Bind(&param)
 		if errBind != nil {
-			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("Error binding data"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error binding data"))
 		}
 		_, err := uh.userUseCase.CreateUser(param)
 		if err != nil {
-			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("Register failed"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("register failed"))
 		}
-		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("Successfully registered"))
+		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("successfully registered"))
 	}
 }
 
