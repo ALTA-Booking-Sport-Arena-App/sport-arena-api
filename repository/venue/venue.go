@@ -30,21 +30,22 @@ func (ur *VenueRepository) CreateStep2(request []_entities.Step2, facility []_en
 	return request, int(yx.RowsAffected), nil
 }
 
-func (ur *VenueRepository) GetAllList(name string) ([]_entities.Venue, error) {
+func (ur *VenueRepository) GetAllList(name string, category string) ([]_entities.Venue, error) {
 	var venues []_entities.Venue
 	var tx *gorm.DB
-	if name != "" {
+	if name != "" || category != "" {
 		name = "%" + name + "%"
-		tx = ur.DB.Where("name LIKE ?", name).Find(&venues)
+		category = "%" + category + "%"
+		tx = ur.DB.Where("name LIKE ? OR category LIKE ?", name, category).Find(&venues)
 		if tx.Error != nil {
 			return nil, tx.Error
 		}
-	}
-	if name == "" {
+	} else {
 		tx = ur.DB.Find(&venues)
 		if tx.Error != nil {
 			return nil, tx.Error
 		}
 	}
+
 	return venues, nil
 }

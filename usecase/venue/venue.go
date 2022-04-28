@@ -22,9 +22,9 @@ func (cuc *VenueUseCase) CreateStep2(request []_entities.Step2, facility []_enti
 	return venue, rows, err
 }
 
-func (cuc *VenueUseCase) GetAllList(name string) ([]_entities.GetVenuesResponse, error) {
+func (cuc *VenueUseCase) GetAllList(name string, category string) ([]_entities.GetVenuesResponse, error) {
 	var getVenues []_entities.GetVenuesResponse
-	venues, err := cuc.venueRepository.GetAllList(name)
+	venues, err := cuc.venueRepository.GetAllList(name, category)
 	if err != nil {
 		return getVenues, err
 	}
