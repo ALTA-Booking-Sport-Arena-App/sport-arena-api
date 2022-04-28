@@ -3,6 +3,7 @@ package payment
 import (
 	_entities "capstone/entities"
 	_paymentRepo "capstone/repository/payment"
+	"fmt"
 )
 
 type PaymentUseCase struct {
@@ -26,4 +27,11 @@ func (pus *PaymentUseCase) GetAllHistory(id int) ([]_entities.Payment, error) {
 
 	// fmt.Println("historyResponseUseCase", historyResponse)
 	return history, err
+}
+
+func (pus *PaymentUseCase) CreateBooking(booking _entities.Payment) (_entities.Payment, error) {
+	fmt.Println("booking-usecase", booking)
+	booking, err := pus.paymentRepository.CreateBooking(booking)
+
+	return booking, err
 }

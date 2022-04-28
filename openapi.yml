@@ -358,7 +358,7 @@ paths:
                   example: basketball
                 icon_name:
                   type: string
-                  example: fa-solid fa-sportsball
+                  example: fa-solid fa-basketball
       responses:
         "200":
           $ref: "#/components/responses/createCategorySuccess"
@@ -880,9 +880,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: success
+              code:
+                type: integer
+                example: 200
               message:
                 type: string
                 example: success delete user
@@ -893,9 +893,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: failed
+              code:
+                type: integer
+                example: 400
               message:
                 type: string
                 example: failed delete user
@@ -906,9 +906,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: success
+              code:
+                type: integer
+                example: 200
               message:
                 type: string
                 example: register successfully
@@ -919,9 +919,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: failed
+              code:
+                type: integer
+                example: 400
               message:
                 type: string
                 example: register failed
@@ -946,10 +946,10 @@ components:
                     example: sepatu
                   role:
                     type: string
-                    example: user
+                    example: owner
                   status:
                     type: string
-                    example: owner
+                    example: approved
                   email:
                     type: string
                     example: sepatu@mail.com
@@ -968,9 +968,9 @@ components:
                   bussiness_certificate:
                     type: string
                     example: terms certificate
-              status:
-                type: string
-                example: success
+              code:
+                type: integer
+                example: 200
               message:
                 type: string
                 example: success get user profile
@@ -981,9 +981,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: failed
+              code:
+                type: integer
+                example: 400
               message:
                 type: string
                 example: failed get user profile
@@ -994,9 +994,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: success
+              code:
+                type: integer
+                example: 200
               message:
                 type: string
                 example: success edit user profile
@@ -1007,9 +1007,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: failed
+              code:
+                type: integer
+                example: 400
               message:
                 type: string
                 example: failed edit user profile
@@ -1020,9 +1020,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: success
+              code:
+                type: integer
+                example: 200
               message:
                 type: string
                 example: create venue successfully
@@ -1033,9 +1033,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: failed
+              code:
+                type: integer
+                example: 400
               message:
                 type: string
                 example: create venue failed
@@ -1066,9 +1066,9 @@ components:
                     image:
                       type: string
                       example: image                    
-              status:
-                type: string
-                example: success
+              code:
+                type: integer
+                example: 200
               message:
                 type: string
                 example: success to get venues
@@ -1079,9 +1079,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: failed
+              code:
+                type: integer
+                example: 400
               message:
                 type: string
                 example: failed to get venues
@@ -1124,9 +1124,9 @@ components:
                         hours:
                           type: string
                           example: 09:00 - 10:00
-              status:
-                type: string
-                example: success
+              code:
+                type: integer
+                example: 200
               message:
                 type: string
                 example: success to get all venues history
@@ -1137,9 +1137,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: failed
+              code:
+                type: integer
+                example: 400
               message:
                 type: string
                 example: failed to get venues history
@@ -1150,9 +1150,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: success
+              code:
+                type: integer
+                example: 200
               message:
                 type: string
                 example: success to request for being owner
@@ -1163,9 +1163,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: failed
+              code:
+                type: integer
+                example: 400
               message:
                 type: string
                 example: failed to request for being owner
@@ -1176,9 +1176,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: success
+              code:
+                type: integer
+                example: 200
               message:
                 type: string
                 example: verification approved successfully
@@ -1189,9 +1189,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: failed
+              code:
+                type: integer
+                example: 400
               message:
                 type: string
                 example: verification approved failed
@@ -1202,9 +1202,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: success
+              code:
+                type: integer
+                example: 200
               message:
                 type: string
                 example: verification reject successfully
@@ -1215,9 +1215,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: failed
+              code:
+                type: integer
+                example: 400
               message:
                 type: string
                 example: verification reject failed
@@ -1268,9 +1268,9 @@ components:
                           hours:
                             type: string
                             example: 09:00 - 10:00
-              status:
-                type: string
-                example: success
+              code:
+                type: integer
+                example: 200
               message:
                 type: string
                 example: success to get all owners
@@ -1281,9 +1281,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: failed
+              code:
+                type: integer
+                example: 400
               message:
                 type: string
                 example: failed to get all owners
@@ -1294,9 +1294,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: success
+              code:
+                type: integer
+                example: 200
               message:
                 type: string
                 example: created category successfully
@@ -1307,9 +1307,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: failed
+              code:
+                type: integer
+                example: 400
               message:
                 type: string
                 example: created category failed
@@ -1333,10 +1333,10 @@ components:
                       example: Basketball
                     icon_name:
                       type: string
-                      example: fa-solid fa-baskteball
-              status:
-                type: string
-                example: success
+                      example: fa-solid fa-basketball
+              code:
+                type: integer
+                example: 200
               message:
                 type: string
                 example: success to get all categories
@@ -1347,9 +1347,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: failed
+              code:
+                type: integer
+                example: 400
               message:
                 type: string
                 example: failed to get all categories
@@ -1360,9 +1360,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: success
+              code:
+                type: integer
+                example: 200
               message:
                 type: string
                 example: updated category successfully
@@ -1373,9 +1373,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: failed
+              code:
+                type: integer
+                example: 400
               message:
                 type: string
                 example: updated category failed
@@ -1386,9 +1386,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: success
+              code:
+                type: integer
+                example: 200
               message:
                 type: string
                 example: deleted category successfully
@@ -1399,9 +1399,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: failed
+              code:
+                type: integer
+                example: 400
               message:
                 type: string
                 example: deleted category failed
@@ -1412,9 +1412,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: success
+              code:
+                type: integer
+                example: 200
               message:
                 type: string
                 example: created facility successfully
@@ -1425,9 +1425,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: success
+              code:
+                type: integer
+                example: 200
               message:
                 type: string
                 example: created facility failed
@@ -1452,9 +1452,9 @@ components:
                     icon_name:
                       type: string
                       example: fa-solid fa-sportsball
-              status:
-                type: string
-                example: success
+              code:
+                type: integer
+                example: 200
               message:
                 type: string
                 example: success to get all facilities
@@ -1465,9 +1465,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: failed
+              code:
+                type: integer
+                example: 400
               message:
                 type: string
                 example: failed to get all facilities
@@ -1478,9 +1478,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: success
+              code:
+                type: integer
+                example: 200
               message:
                 type: string
                 example: updated facility successfully
@@ -1491,9 +1491,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: failed
+              code:
+                type: integer
+                example: 400
               message:
                 type: string
                 example: updated facility failed
@@ -1504,9 +1504,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: success
+              code:
+                type: integer
+                example: 200
               message:
                 type: string
                 example: deleted facility successfully
@@ -1517,9 +1517,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: failed
+              code:
+                type: integer
+                example: 400
               message:
                 type: string
                 example: deleted facility failed
@@ -1530,9 +1530,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: success
+              code:
+                type: integer
+                example: 200
               message:
                 type: string
                 example: updated venue successfully
@@ -1543,9 +1543,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: failed
+              code:
+                type: integer
+                example: 400
               message:
                 type: string
                 example: updated venue failed
@@ -1556,9 +1556,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: success
+              code:
+                type: integer
+                example: 200
               message:
                 type: string
                 example: deleted venue successfully
@@ -1569,9 +1569,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: failed
+              code:
+                type: integer
+                example: 400
               message:
                 type: string
                 example: deleted venue failed
@@ -1582,9 +1582,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: success
+              code:
+                type: integer
+                example: 200
               message:
                 type: string
                 example: updated password successfully
@@ -1595,9 +1595,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: failed
+              code:
+                type: integer
+                example: 400
               message:
                 type: string
                 example: updated password failed
@@ -1636,10 +1636,10 @@ components:
                           example: 1
                         name:
                           type: string
-                          example: baseball
+                          example: toilet
                         icon_name:
                           type: string
-                          example: fa-solid fa-baseball
+                          example: fa-solid fa-restroom
                   category:
                     type: object
                     properties:
@@ -1648,7 +1648,10 @@ components:
                         example: 1
                       name:
                         type: string
-                        example: baseball
+                        example: basketball
+                      icon_name:
+                          type: string
+                          example: fa-solid fa-basketball
                   operational_hours:
                     type: object
                     properties:
@@ -1668,9 +1671,9 @@ components:
                       price:
                         type: integer
                         example: 200000
-              status:
-                type: string
-                example: success
+              code:
+                type: integer
+                example: 200
               message:
                 type: string
                 example: success get venue by id
@@ -1681,9 +1684,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: failed
+              code:
+                type: integer
+                example: 400
               message:
                 type: string
                 example: get venue by id failed
@@ -1694,9 +1697,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: success
+              code:
+                type: integer
+                example: 200
               message:
                 type: string
                 example: created payment successfully
@@ -1707,9 +1710,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: failed
+              code:
+                type: integer
+                example: 400
               message:
                 type: string
                 example: created payment failed
@@ -1741,9 +1744,9 @@ components:
                   end_date:
                     type: string
                     example: "2022-04-07T21:08:54.73+07:00"               
-              status:
-                type: string
-                example: success
+              code:
+                type: integer
+                example: 200
               message:
                 type: string
                 example: success to create booking
@@ -1754,9 +1757,9 @@ components:
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: failed
+              code:
+                type: integer
+                example: 400
               message:
                 type: string
                 example: created booking failed

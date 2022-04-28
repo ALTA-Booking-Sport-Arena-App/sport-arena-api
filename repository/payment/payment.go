@@ -29,3 +29,15 @@ func (pr *PaymentRepository) GetAllHistory(id int) ([]_entities.Payment, error) 
 
 	return history, nil
 }
+
+func (pr *PaymentRepository) CreateBooking(booking _entities.Payment) (_entities.Payment, error) {
+	fmt.Println("booking-repo", booking)
+
+	tx := pr.database.Save(&booking)
+
+	if tx.Error != nil {
+		return booking, tx.Error
+	}
+
+	return booking, nil
+}
