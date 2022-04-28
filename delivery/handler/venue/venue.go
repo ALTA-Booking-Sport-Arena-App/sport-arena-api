@@ -73,7 +73,8 @@ func (uh *VenueHandler) GetAllListHandler() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		//query param for searching venue
 		name := c.QueryParam("name")
-		getVenues, err := uh.venueUseCase.GetAllList(name)
+		category := c.QueryParam("category")
+		getVenues, err := uh.venueUseCase.GetAllList(name, category)
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to get venues"))
 		}
