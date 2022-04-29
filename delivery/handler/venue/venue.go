@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/labstack/echo/v4"
 )
@@ -84,34 +83,17 @@ func (uh *VenueHandler) CreateStep2Handler() echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
 		}
 
-		// formatting time
-		layoutFormat := "3:04:05 PM"
-
-		openHourParse, err_date_parse := time.Parse(layoutFormat, param.OpenHour)
-		if err_date_parse != nil {
-			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("error to format time.Time"))
-		}
-
-		closeHourParse, err_date_parse := time.Parse(layoutFormat, param.CloseHour)
-		if err_date_parse != nil {
-			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("error to format time.Time"))
-		}
-
-		fmt.Println(param.CloseHour)
-		fmt.Println(closeHourParse)
-
 		var operationalRequest = []_entities.Step2{}
 		for _, v := range param.Day {
 			fmt.Println(v)
 			request := _entities.Step2{
 				VenueID:   param.VenueID,
-				OpenHour:  openHourParse,
-				CloseHour: closeHourParse,
+				OpenHour:  param.OpenHour,
+				CloseHour: param.CloseHour,
 				Price:     param.Price,
 				Day:       v,
 			}
 			operationalRequest = append(operationalRequest, request)
-
 		}
 
 		var venuefacility = []_entities.VenueFacility{}
