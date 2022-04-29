@@ -49,3 +49,13 @@ type ListOwnersResponse struct {
 	BusinessName string  `json:"business_name" form:"business_name"`
 	Venues       []Venue `gorm:"foreignKey:UserID;references:ID" json:"venue" form:"venue"`
 }
+
+type ListOwnerRequestResponse struct {
+	gorm.Model
+	FullName            string `gorm:"not null" json:"fullname" form:"fullname"`
+	Username            string `gorm:"not null;unique" json:"username" form:"username"`
+	Email               string `gorm:"not null;unique" json:"email" form:"email"`
+	PhoneNumber         string `gorm:"not null" json:"phone_number" form:"phone_number"`
+	Status              string `json:"status" form:"status"`
+	BusinessCertificate string `json:"business_certificate" form:"business_certificate"`
+}

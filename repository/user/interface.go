@@ -17,4 +17,5 @@ type UserRepositoryInterface interface {
 	ApproveOwnerRequest(request _entities.User) error
 	RejectOwnerRequest(request _entities.User) error
 	UpdateAdmin(id int, password string) error
+	GetListOwnerRequests() ([]_entities.User, error)
 }

@@ -128,6 +128,17 @@ func (uuc *UserUseCase) GetListOwners() ([]_entities.ListOwnersResponse, error) 
 	return listOwnersResponse, nil
 }
 
+func (uuc *UserUseCase) GetListOwnerRequests() ([]_entities.ListOwnerRequestResponse, error) {
+	listOwnerRequestResponse := []_entities.ListOwnerRequestResponse{}
+	owners, err := uuc.userRepository.GetListOwnerRequests()
+
+	if err != nil {
+		return listOwnerRequestResponse, err
+	}
+	copier.Copy(&listOwnerRequestResponse, &owners)
+	return listOwnerRequestResponse, nil
+}
+
 func (uuc *UserUseCase) ApproveOwnerRequest(request _entities.User) error {
 	id := int(request.ID)
 	user, rows, err := uuc.userRepository.GetUserById(id)

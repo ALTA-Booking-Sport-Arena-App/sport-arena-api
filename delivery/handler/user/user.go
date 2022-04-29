@@ -275,6 +275,30 @@ func (uh *UserHandler) GetLIstOwnersHandler() echo.HandlerFunc {
 	}
 }
 
+func (uh *UserHandler) GetLIstOwnerRequestHandler() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		// check login status
+		_, errToken := _middlewares.ExtractToken(c)
+		if errToken != nil {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
+		// check role
+		role, errRole := _middlewares.ExtractRole(c)
+		if errRole != nil {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
+		if role != "admin" {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
+		//call GetListOwner function
+		listOwnerRequest, err := uh.userUseCase.GetListOwnerRequests()
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to get all owners request"))
+		}
+		return c.JSON(http.StatusOK, helper.ResponseSuccess("success to get all owners request", listOwnerRequest))
+	}
+}
+
 func (uh *UserHandler) ApproveOwnerRequestHandler() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var request _entities.User
