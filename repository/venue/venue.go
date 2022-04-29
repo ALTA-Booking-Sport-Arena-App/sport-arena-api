@@ -2,6 +2,7 @@ package venue
 
 import (
 	_entities "capstone/entities"
+	"errors"
 
 	"gorm.io/gorm"
 )
@@ -14,6 +15,18 @@ func NewVenueRepository(db *gorm.DB) *VenueRepository {
 	return &VenueRepository{
 		DB: db,
 	}
+}
+
+func (ur *VenueRepository) CreateStep1(request _entities.Venue, image string) (_entities.Venue, int, error) {
+	request.Image = image
+	yx := ur.DB.Save(&request)
+	if yx.Error != nil {
+		return request, 0, yx.Error
+	}
+	if yx.RowsAffected == 0 {
+		return request, 0, errors.New("unable to save event")
+	}
+	return request, int(yx.RowsAffected), nil
 }
 
 func (ur *VenueRepository) CreateStep2(request []_entities.Step2, facility []_entities.VenueFacility) ([]_entities.Step2, int, error) {
