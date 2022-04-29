@@ -275,7 +275,7 @@ func (uh *UserHandler) GetLIstOwnersHandler() echo.HandlerFunc {
 	}
 }
 
-func (uh *UserHandler) GetLIstOwnerRequestHandler() echo.HandlerFunc {
+func (uh *UserHandler) GetListOwnerRequestHandler() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// check login status
 		_, errToken := _middlewares.ExtractToken(c)
