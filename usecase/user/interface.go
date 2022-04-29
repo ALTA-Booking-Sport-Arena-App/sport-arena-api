@@ -17,4 +17,5 @@ type UserUseCaseInterface interface {
 	ApproveOwnerRequest(request _entities.User) error
 	RejectOwnerRequest(request _entities.User) error
 	UpdateAdmin(id int, request _entities.User) error
+	GetListOwnerRequests() ([]_entities.ListOwnerRequestResponse, error)
 }
