@@ -36,3 +36,8 @@ func (cuc *VenueUseCase) GetAllList(name string, category string) ([]_entities.G
 	copier.Copy(&getVenues, &venues)
 	return getVenues, err
 }
+
+func (cuc *VenueUseCase) UpdateStep2(VenueID uint, request []_entities.Step2, facility []_entities.VenueFacility) ([]_entities.Step2, int, error) {
+	venue, rows, err := cuc.venueRepository.UpdateStep2(VenueID, request, facility)
+	return venue, rows, err
+}
