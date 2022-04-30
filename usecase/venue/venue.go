@@ -41,3 +41,8 @@ func (cuc *VenueUseCase) UpdateStep2(VenueID uint, request []_entities.Step2, fa
 	venue, rows, err := cuc.venueRepository.UpdateStep2(VenueID, request, facility)
 	return venue, rows, err
 }
+
+func (cuc *VenueUseCase) UpdateStep1(request _entities.Venue, id uint) (_entities.Venue, int, error) {
+	venue, rows, err := cuc.venueRepository.UpdateStep1(request, id)
+	return venue, rows, err
+}
