@@ -177,3 +177,54 @@ func (uh *VenueHandler) UpdateStep2Handler() echo.HandlerFunc {
 	}
 
 }
+
+func (eh *VenueHandler) UpdateStep1Handler() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		// check login status
+		idToken, errToken := _middlewares.ExtractToken(c)
+		if errToken != nil {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
+
+		// binding data
+		var venue _entities.Venue
+		errBind := c.Bind(&venue)
+		if errBind != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("error to bind data"))
+		}
+
+		id, _ := strconv.Atoi(c.Param("id"))
+
+		// binding image
+		fileData, fileInfo, err_binding_image := c.Request().FormFile("image")
+		if err_binding_image != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error to bind image"))
+		}
+		// check file CheckFileExtension
+		_, err_check_extension := image.CheckImageFileExtension(fileInfo.Filename)
+		if err_check_extension != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error checking file extension"))
+		}
+		// check file size
+		err_check_size := image.CheckImageFileSize(fileInfo.Size)
+		if err_check_size != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error checking file size"))
+		}
+		fileName := "user_profile_id_" + strconv.Itoa(idToken)
+		// upload the photo
+		var err_upload_photo error
+		venue.Image, err_upload_photo = image.UploadImage("venues", fileName, fileData)
+		if err_upload_photo != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error to upload file"))
+		}
+
+		_, rows, err := eh.venueUseCase.UpdateStep1(venue, uint(id))
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to create event"))
+		}
+		if rows == 0 {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("data not found"))
+		}
+		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("success to create event"))
+	}
+}

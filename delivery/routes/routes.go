@@ -49,6 +49,7 @@ func RegisterVenuePath(e *echo.Echo, uh _venueHandler.VenueHandler) {
 	e.POST("/venues/step2", uh.CreateStep2Handler(), _middlewares.JWTMiddleware())
 	e.POST("/venues/step1", uh.CreateStep1Handler(), _middlewares.JWTMiddleware())
 	e.PUT("/venues/step2/:id", uh.UpdateStep2Handler(), _middlewares.JWTMiddleware())
+	e.PUT("/venues/step1/:id", uh.UpdateStep1Handler(), _middlewares.JWTMiddleware())
 	e.GET("/venues", uh.GetAllListHandler())
 }
 

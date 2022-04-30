@@ -76,3 +76,14 @@ func (ur *VenueRepository) UpdateStep2(VenueID uint, request []_entities.Step2, 
 
 	return request, int(yx.RowsAffected), nil
 }
+
+func (ur *VenueRepository) UpdateStep1(request _entities.Venue, id uint) (_entities.Venue, int, error) {
+	yx := ur.DB.Model(&_entities.Venue{}).Where("id = ?", id).Updates(request)
+	if yx.Error != nil {
+		return request, 0, yx.Error
+	}
+	if yx.RowsAffected == 0 {
+		return request, 0, yx.Error
+	}
+	return request, int(yx.RowsAffected), nil
+}
