@@ -62,3 +62,17 @@ func (ur *VenueRepository) GetAllList(name string, category string) ([]_entities
 
 	return venues, nil
 }
+
+func (ur *VenueRepository) UpdateStep2(VenueID uint, request []_entities.Step2, facility []_entities.VenueFacility) ([]_entities.Step2, int, error) {
+	yx := ur.DB.Model(&[]_entities.Step2{}).Where("venue_id = ?", VenueID).Updates(&request)
+	if yx.Error != nil {
+		return request, 0, yx.Error
+	}
+
+	tx := ur.DB.Model(&[]_entities.VenueFacility{}).Where("venue_id = ?", VenueID).Updates(&facility)
+	if tx.Error != nil {
+		return request, 0, tx.Error
+	}
+
+	return request, int(yx.RowsAffected), nil
+}

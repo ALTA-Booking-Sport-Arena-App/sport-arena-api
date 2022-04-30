@@ -59,7 +59,7 @@ func (eh *VenueHandler) CreateStep1Handler() echo.HandlerFunc {
 		if err_upload_photo != nil {
 			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error to upload file"))
 		}
-		// create event
+
 		venue.UserID = uint(idToken)
 		imageURL := theUrl
 		_, rows, err := eh.venueUseCase.CreateStep1(venue, imageURL)
@@ -130,4 +130,50 @@ func (uh *VenueHandler) GetAllListHandler() echo.HandlerFunc {
 		}
 		return c.JSON(http.StatusOK, helper.ResponseSuccess("success to get venues", getVenues))
 	}
+}
+
+func (uh *VenueHandler) UpdateStep2Handler() echo.HandlerFunc {
+
+	return func(c echo.Context) error {
+		var param helper.VenueRequestFormat
+
+		err := c.Bind(&param)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
+		}
+
+		VenueID, _ := strconv.Atoi(c.Param("id"))
+
+		var operationalRequest = []_entities.Step2{}
+		for _, v := range param.Day {
+			fmt.Println(v)
+			request := _entities.Step2{
+				OpenHour:  param.OpenHour,
+				CloseHour: param.CloseHour,
+				Price:     param.Price,
+				Day:       v,
+			}
+			operationalRequest = append(operationalRequest, request)
+		}
+
+		var venuefacility = []_entities.VenueFacility{}
+		for _, i := range param.FacilityID {
+			fmt.Println(i)
+			request := _entities.VenueFacility{
+				FacilityID: i,
+			}
+			venuefacility = append(venuefacility, request)
+
+		}
+		fmt.Println(VenueID)
+		_, rows, err := uh.venueUseCase.UpdateStep2(uint(VenueID), operationalRequest, venuefacility)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
+		}
+		if rows == 0 {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("data not found"))
+		}
+		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("success update venue"))
+	}
+
 }
