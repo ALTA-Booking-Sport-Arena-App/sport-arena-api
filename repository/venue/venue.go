@@ -87,3 +87,31 @@ func (ur *VenueRepository) UpdateStep1(request _entities.Venue, id uint) (_entit
 	}
 	return request, int(yx.RowsAffected), nil
 }
+
+func (ur *VenueRepository) DeleteVenue(id uint) (int, error) {
+
+	yx := ur.DB.Unscoped().Where("venue_id = ?", id).Delete(&_entities.Step2{})
+	if yx.Error != nil {
+		return 0, yx.Error
+	}
+	if yx.RowsAffected == 0 {
+		return 0, yx.Error
+	}
+
+	ax := ur.DB.Unscoped().Where("venue_id = ?", id).Delete(&_entities.VenueFacility{})
+	if ax.Error != nil {
+		return 0, ax.Error
+	}
+	if ax.RowsAffected == 0 {
+		return 0, ax.Error
+	}
+	tx := ur.DB.Unscoped().Delete(&_entities.Venue{}, id)
+	if tx.Error != nil {
+		return 0, tx.Error
+	}
+	if tx.RowsAffected == 0 {
+		return 0, tx.Error
+	}
+
+	return int(tx.RowsAffected), nil
+}
