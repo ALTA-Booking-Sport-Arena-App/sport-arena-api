@@ -220,11 +220,28 @@ func (eh *VenueHandler) UpdateStep1Handler() echo.HandlerFunc {
 
 		_, rows, err := eh.venueUseCase.UpdateStep1(venue, uint(id))
 		if err != nil {
-			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to create event"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed update event"))
 		}
 		if rows == 0 {
 			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("data not found"))
 		}
-		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("success to create event"))
+		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("success update event"))
+	}
+}
+
+func (uh *VenueHandler) DeleteVenueHandler() echo.HandlerFunc {
+
+	return func(c echo.Context) error {
+
+		id, _ := strconv.Atoi(c.Param("id"))
+
+		rows, err := uh.venueUseCase.DeleteVenue(uint(id))
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("deleted venue failed"))
+		}
+		if rows == 0 {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("data not found"))
+		}
+		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("deleted venue successfully"))
 	}
 }
