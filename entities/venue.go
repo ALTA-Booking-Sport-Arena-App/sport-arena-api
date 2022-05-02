@@ -15,7 +15,7 @@ type Venue struct {
 	City          string          `json:"city" form:"city"`
 	Address       string          `json:"address" form:"address"`
 	BookingTime   time.Time       `json:"booking_time" form:"booking_time"`
-	Step2         []Step2         `gorm:"foreignKey:VenueID;references:ID" json:"operational" form:"operational"`
+	Step2         []Step2         `gorm:"foreignKey:VenueID;references:ID" json:"step2" form:"step2"`
 	User          User            `gorm:"foreignKey:UserID;references:ID" json:"user" form:"user"`
 	Category      Category        `gorm:"foreignKey:CategoryID;references:ID" json:"category" form:"category"`
 	VenueFacility []VenueFacility `gorm:"foreignKey:VenueID;references:ID" json:"facility_id" form:"facility_id"`
