@@ -51,3 +51,8 @@ func (cuc *VenueUseCase) DeleteVenue(id uint) (int, error) {
 	rows, err := cuc.venueRepository.DeleteVenue(id)
 	return rows, err
 }
+
+func (cuc *VenueUseCase) GetVenueById(id int) (_entities.Venue, int, error) {
+	venue, rows, err := cuc.venueRepository.GetVenueById(id)
+	return venue, rows, err
+}
