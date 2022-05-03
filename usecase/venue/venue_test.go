@@ -112,6 +112,24 @@ func TestDeleteVenue(t *testing.T) {
 	})
 }
 
+func TestGetVenueById(t *testing.T) {
+	t.Run("TestGetAllSuccess", func(t *testing.T) {
+		venueUseCase := NewVenueUseCase(mockVenueRepository{})
+		data, rows, err := venueUseCase.GetVenueById(1)
+		assert.Nil(t, err)
+		assert.Equal(t, 1, rows)
+		assert.Equal(t, "lapangan", data.Name)
+	})
+
+	t.Run("TestGetAllError", func(t *testing.T) {
+		venueUseCase := NewVenueUseCase(mockVenueRepositoryError{})
+		data, rows, err := venueUseCase.GetVenueById(0)
+		assert.NotNil(t, err)
+		assert.Equal(t, 1, rows)
+		assert.Nil(t, nil, data)
+	})
+}
+
 // === mock success ===
 type mockVenueRepository struct{}
 
@@ -133,7 +151,7 @@ func (m mockVenueRepository) CreateStep2(request []_entities.Step2, facility []_
 	}, 1, nil
 }
 
-func (m mockVenueRepository) UpdateStep2(VenueID uint, request []_entities.Step2, facility []_entities.VenueFacility) ([]_entities.Step2, int, error) {
+func (m mockVenueRepository) UpdateStep2(request []_entities.Step2, facility []_entities.VenueFacility) ([]_entities.Step2, int, error) {
 	return []_entities.Step2{
 		{CloseHour: "10 PM"},
 	}, 1, nil
@@ -147,6 +165,24 @@ func (m mockVenueRepository) UpdateStep1(request _entities.Venue, id uint) (_ent
 
 func (m mockVenueRepository) DeleteVenue(id uint) (int, error) {
 	return 1, nil
+}
+
+func (m mockVenueRepository) GetVenueById(id int) (_entities.Venue, int, error) {
+	return _entities.Venue{
+		Name: "lapangan",
+	}, 1, nil
+}
+
+func (m mockVenueRepository) GetVenueFacilityById(id int) ([]_entities.VenueFacility, int, error) {
+	return []_entities.VenueFacility{
+		{FacilityID: 1},
+	}, 1, nil
+}
+
+func (m mockVenueRepository) GetStep2ById(id int) ([]_entities.Step2, int, error) {
+	return []_entities.Step2{
+		{Price: 5000},
+	}, 1, nil
 }
 
 // === mock error ===
@@ -169,10 +205,22 @@ func (m mockVenueRepositoryError) UpdateStep1(request _entities.Venue, id uint) 
 	return _entities.Venue{}, 1, fmt.Errorf("error get all data facility")
 }
 
-func (m mockVenueRepositoryError) UpdateStep2(VenueID uint, request []_entities.Step2, facility []_entities.VenueFacility) ([]_entities.Step2, int, error) {
+func (m mockVenueRepositoryError) UpdateStep2(request []_entities.Step2, facility []_entities.VenueFacility) ([]_entities.Step2, int, error) {
 	return nil, 0, fmt.Errorf("error get all data facility")
 }
 
 func (m mockVenueRepositoryError) DeleteVenue(id uint) (int, error) {
 	return 1, fmt.Errorf("error get all data facility")
+}
+
+func (m mockVenueRepositoryError) GetVenueFacilityById(id int) ([]_entities.VenueFacility, int, error) {
+	return nil, 0, fmt.Errorf("error get all data facility")
+}
+
+func (m mockVenueRepositoryError) GetStep2ById(id int) ([]_entities.Step2, int, error) {
+	return nil, 0, fmt.Errorf("error get all data facility")
+}
+
+func (m mockVenueRepositoryError) GetVenueById(id int) (_entities.Venue, int, error) {
+	return _entities.Venue{}, 1, fmt.Errorf("error get all data facility")
 }

@@ -38,7 +38,9 @@ func (cuc *VenueUseCase) GetAllList(name string, category string) ([]_entities.G
 }
 
 func (cuc *VenueUseCase) UpdateStep2(VenueID uint, request []_entities.Step2, facility []_entities.VenueFacility) ([]_entities.Step2, int, error) {
-	venue, rows, err := cuc.venueRepository.UpdateStep2(VenueID, request, facility)
+	venueFind, rows, err := cuc.venueRepository.GetVenueFacilityById(int(VenueID))
+	facilityFind, rows, err := cuc.venueRepository.GetStep2ById(int(VenueID))
+	venue, rows, err := cuc.venueRepository.UpdateStep2(facilityFind, venueFind)
 	return venue, rows, err
 }
 

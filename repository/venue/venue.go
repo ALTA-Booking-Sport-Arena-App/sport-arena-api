@@ -63,13 +63,13 @@ func (ur *VenueRepository) GetAllList(name string, category string) ([]_entities
 	return venues, nil
 }
 
-func (ur *VenueRepository) UpdateStep2(VenueID uint, request []_entities.Step2, facility []_entities.VenueFacility) ([]_entities.Step2, int, error) {
-	yx := ur.DB.Model(&[]_entities.Step2{}).Where("venue_id = ?", VenueID).Updates(&request)
+func (ur *VenueRepository) UpdateStep2(request []_entities.Step2, facility []_entities.VenueFacility) ([]_entities.Step2, int, error) {
+	yx := ur.DB.Save(&request)
 	if yx.Error != nil {
 		return request, 0, yx.Error
 	}
 
-	tx := ur.DB.Model(&[]_entities.VenueFacility{}).Where("venue_id = ?", VenueID).Updates(&facility)
+	tx := ur.DB.Save(&facility)
 	if tx.Error != nil {
 		return request, 0, tx.Error
 	}
@@ -119,6 +119,30 @@ func (ur *VenueRepository) DeleteVenue(id uint) (int, error) {
 func (ur *VenueRepository) GetVenueById(id int) (_entities.Venue, int, error) {
 	var venue _entities.Venue
 	tx := ur.DB.Preload("Category").Preload("Step2").Preload("VenueFacility.Facility").Find(&venue, id)
+	if tx.Error != nil {
+		return venue, 0, tx.Error
+	}
+	if tx.RowsAffected == 0 {
+		return venue, 0, nil
+	}
+	return venue, int(tx.RowsAffected), nil
+}
+
+func (ur *VenueRepository) GetVenueFacilityById(id int) ([]_entities.VenueFacility, int, error) {
+	var venue []_entities.VenueFacility
+	tx := ur.DB.Where("event_id = ?", id).Find(&venue)
+	if tx.Error != nil {
+		return venue, 0, tx.Error
+	}
+	if tx.RowsAffected == 0 {
+		return venue, 0, nil
+	}
+	return venue, int(tx.RowsAffected), nil
+}
+
+func (ur *VenueRepository) GetStep2ById(id int) ([]_entities.Step2, int, error) {
+	var venue []_entities.Step2
+	tx := ur.DB.Where("event_id = ?", id).Find(&venue)
 	if tx.Error != nil {
 		return venue, 0, tx.Error
 	}
