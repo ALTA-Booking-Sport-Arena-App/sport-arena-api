@@ -50,7 +50,7 @@
 
 * [Go as Programming Language](https://golang.org/)
 * [Echo as Framework](https://echo.labstack.com/)
-* [JWT Auth as Autentication](https://github.com/dgrijalva/jwt-go)
+* [JWT Auth as Authentication](https://github.com/dgrijalva/jwt-go)
 * [Gorm as ORM](https://gorm.io/index.html)
 * [MySql as Database](https://www.mysql.com/)
 * [Database Stored in RDS Cloud by Amazon Web Services](https://aws.amazon.com/id/?nc2=h_lg)
