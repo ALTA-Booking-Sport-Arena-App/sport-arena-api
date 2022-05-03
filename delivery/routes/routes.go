@@ -52,6 +52,7 @@ func RegisterVenuePath(e *echo.Echo, uh _venueHandler.VenueHandler) {
 	e.PUT("/venues/step1/:id", uh.UpdateStep1Handler(), _middlewares.JWTMiddleware())
 	e.DELETE("/venues/:id", uh.DeleteVenueHandler(), _middlewares.JWTMiddleware())
 	e.GET("/venues", uh.GetAllListHandler())
+	e.GET("/venues/:id", uh.GetVenueByIdHandler())
 }
 
 func PaymentArenaPath(e *echo.Echo, ph _paymentHandler.PaymentHandler) {

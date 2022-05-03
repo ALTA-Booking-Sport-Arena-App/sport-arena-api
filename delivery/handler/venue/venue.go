@@ -245,3 +245,56 @@ func (uh *VenueHandler) DeleteVenueHandler() echo.HandlerFunc {
 		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("deleted venue successfully"))
 	}
 }
+
+func (uh *VenueHandler) GetVenueByIdHandler() echo.HandlerFunc {
+	return func(c echo.Context) error {
+
+		id, _ := strconv.Atoi(c.Param("id"))
+		venue, rows, err := uh.venueUseCase.GetVenueById(id)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to fetch data"))
+		}
+		if rows == 0 {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("data not found"))
+		}
+
+		step2 := []map[string]interface{}{}
+		for i := 0; i < len(venue.Step2); i++ {
+			response := map[string]interface{}{
+				"day":        venue.Step2[i].Day,
+				"open_hour":  venue.Step2[i].OpenHour,
+				"close_hour": venue.Step2[i].CloseHour,
+				"price":      venue.Step2[i].Price,
+			}
+			step2 = append(step2, response)
+		}
+
+		facility := []map[string]interface{}{}
+		for i := 0; i < len(venue.VenueFacility); i++ {
+			response := map[string]interface{}{
+				"id":        venue.VenueFacility[i].Facility.ID,
+				"name":      venue.VenueFacility[i].Facility.Name,
+				"icon_name": venue.VenueFacility[i].Facility.IconName,
+			}
+			facility = append(facility, response)
+		}
+
+		responseVenue := map[string]interface{}{
+			"id":                venue.ID,
+			"name":              venue.Name,
+			"user_id":           venue.UserID,
+			"image":             venue.Image,
+			"city":              venue.City,
+			"address":           venue.Address,
+			"operational_hours": step2,
+			"facility":          facility,
+			"category": map[string]interface{}{
+				"id":        venue.Category.ID,
+				"name":      venue.Category.Name,
+				"icon_name": venue.Category.IconName,
+			},
+		}
+
+		return c.JSON(http.StatusOK, helper.ResponseSuccess("success get detail arena", responseVenue))
+	}
+}

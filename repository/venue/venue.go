@@ -115,3 +115,15 @@ func (ur *VenueRepository) DeleteVenue(id uint) (int, error) {
 
 	return int(tx.RowsAffected), nil
 }
+
+func (ur *VenueRepository) GetVenueById(id int) (_entities.Venue, int, error) {
+	var venue _entities.Venue
+	tx := ur.DB.Preload("Category").Preload("Step2").Preload("VenueFacility.Facility").Find(&venue, id)
+	if tx.Error != nil {
+		return venue, 0, tx.Error
+	}
+	if tx.RowsAffected == 0 {
+		return venue, 0, nil
+	}
+	return venue, int(tx.RowsAffected), nil
+}
