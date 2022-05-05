@@ -320,6 +320,9 @@ func (uh *UserHandler) ApproveOwnerRequestHandler() echo.HandlerFunc {
 		if errBind != nil {
 			return c.JSON(http.StatusBadRequest, helper.ResponseFailed(errBind.Error()))
 		}
+		if request.Status != "approve" {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("verification approved failed"))
+		}
 		err := uh.userUseCase.ApproveOwnerRequest(request)
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("verification approved failed"))
@@ -348,6 +351,9 @@ func (uh *UserHandler) RejectOwnerRequestHandler() echo.HandlerFunc {
 		errBind := c.Bind(&request)
 		if errBind != nil {
 			return c.JSON(http.StatusBadRequest, helper.ResponseFailed(errBind.Error()))
+		}
+		if request.Status != "reject" {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("verification reject failed"))
 		}
 		err := uh.userUseCase.ApproveOwnerRequest(request)
 		if err != nil {
