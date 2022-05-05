@@ -63,26 +63,26 @@ func (ur *VenueRepository) GetAllList(name string, category string) ([]_entities
 	return venues, nil
 }
 
-func (ur *VenueRepository) UpdateStep2(request []_entities.Step2, facility []_entities.VenueFacility) ([]_entities.Step2, int, error) {
-	// yx := ur.DB.Model(&[]_entities.Step2{}).Where("venue_id = ?", id).Updates(&request)
-	// if yx.Error != nil {
-	// 	return request, 0, yx.Error
-	// }
-
-	// tx := ur.DB.Model(&[]_entities.VenueFacility{}).Where("venue_id = ?", id).Updates(&facility)
-	// if tx.Error != nil {
-	// 	return request, 0, tx.Error
-	// }
-
-	yx := ur.DB.Save(&request)
+func (ur *VenueRepository) UpdateStep2(id int, request []_entities.Step2, facility []_entities.VenueFacility) ([]_entities.Step2, int, error) {
+	yx := ur.DB.Model(&[]_entities.Step2{}).Where("venue_id = ?", id).Updates(&request)
 	if yx.Error != nil {
 		return request, 0, yx.Error
 	}
 
-	tx := ur.DB.Save(&facility)
+	tx := ur.DB.Model(&[]_entities.VenueFacility{}).Where("venue_id = ?", id).Updates(&facility)
 	if tx.Error != nil {
 		return request, 0, tx.Error
 	}
+
+	// yx := ur.DB.Save(&request)
+	// if yx.Error != nil {
+	// 	return request, 0, yx.Error
+	// }
+
+	// tx := ur.DB.Save(&facility)
+	// if tx.Error != nil {
+	// 	return request, 0, tx.Error
+	// }
 
 	return request, int(yx.RowsAffected), nil
 }

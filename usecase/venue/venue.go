@@ -3,6 +3,7 @@ package venue
 import (
 	_entities "capstone/entities"
 	_venueRepository "capstone/repository/venue"
+	"fmt"
 
 	"github.com/jinzhu/copier"
 )
@@ -38,9 +39,10 @@ func (cuc *VenueUseCase) GetAllList(name string, category string) ([]_entities.G
 }
 
 func (cuc *VenueUseCase) UpdateStep2(VenueID uint, request []_entities.Step2, facility []_entities.VenueFacility) ([]_entities.Step2, int, error) {
-	venueFind, rows, err := cuc.venueRepository.GetVenueFacilityById(int(VenueID))
-	facilityFind, rows, err := cuc.venueRepository.GetStep2ById(int(VenueID))
-	venue, rows, err := cuc.venueRepository.UpdateStep2(facilityFind, venueFind)
+	// venueFind, rows, err := cuc.venueRepository.GetVenueFacilityById(int(VenueID))
+	// facilityFind, rows, err := cuc.venueRepository.GetStep2ById(int(VenueID))
+	venue, rows, err := cuc.venueRepository.UpdateStep2(int(VenueID), request, facility)
+	fmt.Println(venue)
 	return venue, rows, err
 }
 
