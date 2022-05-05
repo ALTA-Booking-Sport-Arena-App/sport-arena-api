@@ -41,13 +41,13 @@ func main() {
 	config := configs.GetConfig()
 	db := _utils.InitDB(config)
 
-	authRepo := _authRepository.NewAuthRepository(db)
-	authUseCase := _authUseCase.NewAuthUseCase(authRepo)
-	authHandler := _authHandler.NewAuthHandler(authUseCase)
-
 	userRepo := _userRepository.NewUserRepository(db)
 	userUseCase := _userUseCase.NewUserUseCase(userRepo)
 	userHandler := _userHandler.NewUserHandler(userUseCase)
+
+	authRepo := _authRepository.NewAuthRepository(db)
+	authUseCase := _authUseCase.NewAuthUseCase(authRepo)
+	authHandler := _authHandler.NewAuthHandler(authUseCase)
 
 	categoryRepo := _categoryRepository.NewCategoryRepository(db)
 	categoryUseCase := _categoryUseCase.NewCategoryUseCase(categoryRepo)

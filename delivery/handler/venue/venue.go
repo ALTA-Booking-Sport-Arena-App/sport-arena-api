@@ -148,32 +148,34 @@ func (uh *VenueHandler) UpdateStep2Handler() echo.HandlerFunc {
 		for _, v := range param.Day {
 			fmt.Println(v)
 			request := _entities.Step2{
+				VenueID:   uint(VenueID),
 				OpenHour:  param.OpenHour,
 				CloseHour: param.CloseHour,
 				Price:     param.Price,
 				Day:       v,
 			}
 			operationalRequest = append(operationalRequest, request)
+
 		}
 
 		var venuefacility = []_entities.VenueFacility{}
 		for _, i := range param.FacilityID {
 			fmt.Println(i)
 			request := _entities.VenueFacility{
+				VenueID:    uint(VenueID),
 				FacilityID: i,
 			}
 			venuefacility = append(venuefacility, request)
-
 		}
-		fmt.Println(VenueID)
-		_, rows, err := uh.venueUseCase.UpdateStep2(uint(VenueID), operationalRequest, venuefacility)
+
+		data, rows, err := uh.venueUseCase.UpdateStep2(uint(VenueID), operationalRequest, venuefacility)
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
 		}
 		if rows == 0 {
 			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("data not found"))
 		}
-		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("success update venue"))
+		return c.JSON(http.StatusOK, helper.ResponseSuccess("success update venue", data))
 	}
 
 }
