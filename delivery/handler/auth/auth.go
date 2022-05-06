@@ -42,6 +42,7 @@ func (ah *AuthHandler) LoginHandler() echo.HandlerFunc {
 		})
 		if err != nil {
 			return errors.New("error extract token")
+
 		}
 		if !extract.Valid {
 			return errors.New("invalid")
