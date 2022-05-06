@@ -12,6 +12,7 @@ type Venue struct {
 	CategoryID    uint            `json:"category_id" form:"category_id"`
 	Image         string          `json:"image" form:"image"`
 	Name          string          `json:"name" form:"name"`
+	Description   string          `json:"description" form:"description"`
 	City          string          `json:"city" form:"city"`
 	Address       string          `json:"address" form:"address"`
 	BookingTime   time.Time       `json:"booking_time" form:"booking_time"`

@@ -287,6 +287,7 @@ func (uh *VenueHandler) GetVenueByIdHandler() echo.HandlerFunc {
 		responseVenue := map[string]interface{}{
 			"id":                venue.ID,
 			"name":              venue.Name,
+			"description":       venue.Description,
 			"user_id":           venue.UserID,
 			"image":             venue.Image,
 			"city":              venue.City,
