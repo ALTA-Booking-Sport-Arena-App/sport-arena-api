@@ -62,14 +62,17 @@ func (eh *VenueHandler) CreateStep1Handler() echo.HandlerFunc {
 
 		venue.UserID = uint(idToken)
 		imageURL := theUrl
-		_, rows, err := eh.venueUseCase.CreateStep1(venue, imageURL)
+		data, rows, err := eh.venueUseCase.CreateStep1(venue, imageURL)
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to create event"))
 		}
 		if rows == 0 {
 			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("data not found"))
 		}
-		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("success to create event"))
+		responseVenue := map[string]interface{}{
+			"id": data.ID,
+		}
+		return c.JSON(http.StatusOK, helper.ResponseSuccess("success to create event", responseVenue))
 	}
 }
 
