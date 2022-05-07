@@ -30,8 +30,9 @@ func (uh *CategoryHandler) GetAllCategoryHandler() echo.HandlerFunc {
 		responseCategories := []map[string]interface{}{}
 		for i := 0; i < len(catagory); i++ {
 			response := map[string]interface{}{
-				"id":   catagory[i].ID,
-				"name": catagory[i].Name,
+				"id":        catagory[i].ID,
+				"name":      catagory[i].Name,
+				"icon_name": catagory[i].IconName,
 			}
 			responseCategories = append(responseCategories, response)
 		}
