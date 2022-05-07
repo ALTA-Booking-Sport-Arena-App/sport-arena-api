@@ -51,6 +51,11 @@ func (cuc *VenueUseCase) UpdateStep1(request _entities.Venue, id uint) (_entitie
 	return venue, rows, err
 }
 
+func (cuc *VenueUseCase) UpdateVenueImage(image string, id uint) (int, error) {
+	rows, err := cuc.venueRepository.UpdateVenueImage(image, id)
+	return rows, err
+}
+
 func (cuc *VenueUseCase) DeleteVenue(id uint) (int, error) {
 	rows, err := cuc.venueRepository.DeleteVenue(id)
 	return rows, err
