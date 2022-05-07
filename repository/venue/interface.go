@@ -14,4 +14,5 @@ type VenueRepositoryInterface interface {
 	GetVenueById(id int) (_entities.Venue, int, error)
 	GetVenueFacilityById(id int) ([]_entities.VenueFacility, int, error)
 	GetStep2ById(id int) ([]_entities.Step2, int, error)
+	UpdateVenueImage(image string, id uint) (int, error)
 }

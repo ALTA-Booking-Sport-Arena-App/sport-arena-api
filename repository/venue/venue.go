@@ -98,6 +98,18 @@ func (ur *VenueRepository) UpdateStep1(request _entities.Venue, id uint) (_entit
 	return request, int(yx.RowsAffected), nil
 }
 
+func (ur *VenueRepository) UpdateVenueImage(image string, id uint) (int, error) {
+	var venue []_entities.Venue
+	yx := ur.DB.Model(&venue).Where("id = ?", id).Update("image", image)
+	if yx.Error != nil {
+		return 0, yx.Error
+	}
+	if yx.RowsAffected == 0 {
+		return 0, yx.Error
+	}
+	return int(yx.RowsAffected), nil
+}
+
 func (ur *VenueRepository) DeleteVenue(id uint) (int, error) {
 
 	yx := ur.DB.Unscoped().Where("venue_id = ?", id).Delete(&_entities.Step2{})

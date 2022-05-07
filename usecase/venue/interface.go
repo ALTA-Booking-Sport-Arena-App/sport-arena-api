@@ -12,4 +12,5 @@ type VenueUseCaseInterface interface {
 	UpdateStep2(VenueID uint, request []_entities.Step2, facility []_entities.VenueFacility) ([]_entities.Step2, int, error)
 	DeleteVenue(id uint) (int, error)
 	GetVenueById(id int) (_entities.Venue, int, error)
+	UpdateVenueImage(image string, id uint) (int, error)
 }
