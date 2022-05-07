@@ -64,7 +64,7 @@ func (eh *VenueHandler) CreateStep1Handler() echo.HandlerFunc {
 		imageURL := theUrl
 		data, rows, err := eh.venueUseCase.CreateStep1(venue, imageURL)
 		if err != nil {
-			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to create event"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed create event"))
 		}
 		if rows == 0 {
 			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("data not found"))
@@ -72,7 +72,7 @@ func (eh *VenueHandler) CreateStep1Handler() echo.HandlerFunc {
 		responseVenue := map[string]interface{}{
 			"id": data.ID,
 		}
-		return c.JSON(http.StatusOK, helper.ResponseSuccess("success to create event", responseVenue))
+		return c.JSON(http.StatusOK, helper.ResponseSuccess("success create venue", responseVenue))
 	}
 }
 
@@ -129,9 +129,9 @@ func (uh *VenueHandler) GetAllListHandler() echo.HandlerFunc {
 		category := c.QueryParam("category")
 		getVenues, err := uh.venueUseCase.GetAllList(name, category)
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to get venues"))
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed get venues"))
 		}
-		return c.JSON(http.StatusOK, helper.ResponseSuccess("success to get venues", getVenues))
+		return c.JSON(http.StatusOK, helper.ResponseSuccess("success get venues", getVenues))
 	}
 }
 
@@ -196,12 +196,12 @@ func (eh *VenueHandler) UpdateStep1Handler() echo.HandlerFunc {
 
 		_, rows, err := eh.venueUseCase.UpdateStep1(venue, uint(id))
 		if err != nil {
-			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed update event"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed update venue"))
 		}
 		if rows == 0 {
 			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("data not found"))
 		}
-		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("success update event"))
+		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("success update venue"))
 	}
 }
 
