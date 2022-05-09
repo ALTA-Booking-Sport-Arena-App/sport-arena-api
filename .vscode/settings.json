@@ -1,8 +1,9 @@
 {
   "yaml.schemas": {
     "https://json.schemastore.org/github-workflow.json": "file:///c%3A/Users/Risa/Documents/sport-arena-api/.github/workflows/deploy.yml"
-},
-"editor.tabSize": 2,
-"editor.fontSize": 14,
-"editor.fontFamily": "'Courier New', monospace"
 }
+}
+// "editor.tabSize": 2,
+// "editor.fontSize": 14,
+// "editor.fontFamily": "'Courier New', monospace"
+// }
