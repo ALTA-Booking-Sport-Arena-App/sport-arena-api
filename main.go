@@ -12,9 +12,10 @@ import (
 	_authHandler "capstone/delivery/handler/auth"
 	_paymentHandler "capstone/delivery/handler/payment"
 	_authRepository "capstone/repository/auth"
-	_paymentRepo "capstone/repository/payment"
+	_paymentRepo "capstone/repository/transaction"
 	_authUseCase "capstone/usecase/auth"
-	_paymentUseCase "capstone/usecase/payment"
+	_paymentURLMidtrans "capstone/usecase/payment"
+	_paymentUseCase "capstone/usecase/transaction"
 
 	_userHandler "capstone/delivery/handler/user"
 	_routes "capstone/delivery/routes"
@@ -61,9 +62,11 @@ func main() {
 	venueUseCase := _venueUseCase.NewVenueUseCase(venueRepo)
 	venueHandler := _venueHandler.NewVenueHandler(venueUseCase)
 
+	paymentUrlMidtransService := _paymentURLMidtrans.NewService()
+
 	paymentRepo := _paymentRepo.NewPaymentRepository(db)
-	paymentUseCase := _paymentUseCase.NewFacilityUseCase(paymentRepo)
-	paymentHandler := _paymentHandler.NewFacilityHandler(paymentUseCase)
+	paymentUseCase := _paymentUseCase.NewPaymentUseCase(paymentRepo, paymentUrlMidtransService)
+	paymentHandler := _paymentHandler.NewPaymentHandler(paymentUseCase, userUseCase)
 
 	e := echo.New()
 	e.Use(middleware.CORS())

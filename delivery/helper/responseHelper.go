@@ -2,24 +2,24 @@ package helper
 
 import "golang.org/x/crypto/bcrypt"
 
-func ResponseSuccess(message string, data interface{}) map[string]interface{} {
+func ResponseSuccess(message string, code int, data interface{}) map[string]interface{} {
 	return map[string]interface{}{
-		"code":    200,
+		"code":    code,
 		"message": message,
 		"data":    data,
 	}
 }
 
-func ResponseSuccessWithoutData(message string) map[string]interface{} {
+func ResponseSuccessWithoutData(message string, code int) map[string]interface{} {
 	return map[string]interface{}{
-		"code":    200,
+		"code":    code,
 		"message": message,
 	}
 }
 
-func ResponseFailed(message string) map[string]interface{} {
+func ResponseFailed(message string, code int) map[string]interface{} {
 	return map[string]interface{}{
-		"code":    400,
+		"code":    code,
 		"message": message,
 	}
 }

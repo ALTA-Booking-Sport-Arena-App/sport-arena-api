@@ -256,7 +256,7 @@ paths:
             schema:
               type: object
               properties:
-                user_id:
+                id:
                   type: integer
                   example: 1
                 role:
@@ -283,7 +283,7 @@ paths:
             schema:
               type: object
               properties:
-                user_id:
+                id:
                   type: integer
                   example: 1
                 status:
@@ -315,6 +315,18 @@ paths:
           $ref: "#/components/responses/updateSuperAdminSuccess"
         "400":
           $ref: "#/components/responses/updateSuperAdminFailed"
+  /lists/owners-request:
+    get:
+      tags:
+        - Admin
+      description: Get All users or owners request
+      security:
+        - JWTAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/getAllOwnersRequestSuccess"
+        "400":
+          $ref: "#/components/responses/getAllOwnersRequestFailed"
   /lists/owners:
     get:
       tags:
@@ -393,12 +405,12 @@ paths:
             schema:
               type: object
               properties:
-                id:
-                  type: integer
-                  example: 1
                 name:
                   type: string
                   example: basketball
+                icon_name:
+                  type: string
+                  example: fa-solid fa-basketball
       responses:
         "200":
           $ref: "#/components/responses/updateCategorySuccess"
@@ -455,7 +467,7 @@ paths:
           $ref: "#/components/responses/getAllFacilitySuccess"
         "400":
           $ref: "#/components/responses/getAllFacilityFailed"
-  /Facility/{facilityId}:
+  /facility/{facilityId}:
     put:
       tags:
         - Facility
@@ -527,6 +539,8 @@ paths:
                   type: string
                 city:
                   type: string
+                category_id:
+                  type: integer
                 venue_photo:
                   type: string
                   format: binary
@@ -555,13 +569,13 @@ paths:
                   type: array
                   items:
                     type: string
-                    example: senin
+                    example: monday
                 open_hours:
                   type: string
-                  example: "2022-04-07T21:08:54.73+07:00"
+                  example: "11:00"
                 close_hours:
                   type: string
-                  example: "2022-04-07T21:08:54.73+07:00"
+                  example: "17:00"
                 price:
                   type: integer
                   example: 200000
@@ -579,6 +593,19 @@ paths:
     get:
       tags:
         - Venue
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+            example: basketball
+          required: false
+        - name: name
+          in: query
+          schema:
+            type: string
+            example: arena satu
+          required: false
       responses:
         "200":
           $ref: "#/components/responses/getAllVenueSuccess"
@@ -719,15 +746,15 @@ paths:
                 price:
                   type: integer
                   example: 12000
-                status:
+                day:
                   type: string
-                  example: pending
+                  example: Saturday, 8 May 2022
                 start_date:
                   type: string
-                  example: "2022-04-07T21:08:54.73+07:00"
+                  example: "12:00"
                 end_date:
                   type: string
-                  example: "2022-04-07T21:08:54.73+07:00"
+                  example: "17:00"
       responses:
         "200":
           $ref: "#/components/responses/createBookingSuccess"
@@ -786,6 +813,17 @@ paths:
           $ref: "#/components/responses/getAllVenueHistorySuccess"
         "400":
           $ref: "#/components/responses/getAllVenueHistoryFailed"
+  /owner/history:
+    get:
+      tags:
+        - History
+      security:
+        - JWTAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/getOwnerVenueHistorySuccess"
+        "400":
+          $ref: "#/components/responses/getOwnerVenueHistoryFailed"
 
 #==================================#
 #    COMPONENT
@@ -1054,12 +1092,15 @@ components:
                     id:
                       type: integer
                       example: 1
-                    venue_name:
+                    name:
                       type: string
-                      example: venue name
+                      example: DBL Arena
+                    category:
+                      type: string
+                      example: Basketball
                     location:
                       type: string
-                      example: Jakarta
+                      example: Surabaya
                     price:
                       type: integer
                       example: 10000
@@ -1617,15 +1658,18 @@ components:
                   name:
                     type: string
                     example: Stadion Gelora Bung Karno
+                  description:
+                    type: string
+                    example: ini adalah stadion gelora bung karno jakarta yang merupakan kandang timnas indonesia
                   image:
                     type: string
-                    example: https://unsplash.com/photos/kzduobHvW0o
+                    example: https://images.unsplash.com/photo-1650432161301-1e1099bac56f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=872&q=80
                   address:
                     type: string
                     example: Kota Jakarta Pusat, DKI Jakarta
                   city:
                     type: string
-                    example: Jakartas
+                    example: DKI Jakarta
                   facility:
                     type: array
                     items:
@@ -1661,13 +1705,13 @@ components:
                       days:
                         type: array
                         items:
-                          example: senin
+                          example: monday
                       open_hour:
                         type: string
-                        example: "2022-04-07T21:08:54.73+07:00"
+                        example: "11:00"
                       close_hour:
                         type: string
-                        example: "2022-04-07T21:08:54.73+07:00"
+                        example: "17:00"
                       price:
                         type: integer
                         example: 200000
@@ -1726,24 +1770,9 @@ components:
               data:
                 type: object
                 properties:
-                  id:
-                    type: integer
-                    example: 1
-                  venue_id:
-                    type: integer
-                    example: 1
-                  price:
-                    type: integer
-                    example: 12000
-                  status:
+                  payment_url:
                     type: string
-                    example: pending
-                  start_date:
-                    type: string
-                    example: "2022-04-07T21:08:54.73+07:00"
-                  end_date:
-                    type: string
-                    example: "2022-04-07T21:08:54.73+07:00"               
+                    example: https://app.sandbox.midtrans.com/snap/v2/vtweb/3a6fffbb-b7ea-4dc1-88bc-5271501c5fb0#/select-payment         
               code:
                 type: integer
                 example: 200
@@ -1763,3 +1792,119 @@ components:
               message:
                 type: string
                 example: created booking failed
+    getAllOwnersRequestSuccess:
+      description: success to get all owners request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    fullname:
+                      type: string
+                      example: John Ajib
+                    username:
+                      type: string
+                      example: John Ajib
+                    email:
+                      type: string
+                      example: john@mail.com
+                    phone_number:
+                      type: string
+                      example: 098887767676
+                    business_name:
+                      type: string
+                      example: Business Ajib
+                    business_description:
+                      type: string
+                      example: Business Ajib
+                    business_certificate:
+                      type: string
+                      example: bisnis.pdf
+                    status:
+                      type: string
+                      example: pending
+              code:
+                type: integer
+                example: 200
+              message:
+                type: string
+                example: success to get all owners request
+    getAllOwnersRequestFailed:
+      description: failed to get all owners request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 400
+              message:
+                type: string
+                example: failed to get all owners request
+    getOwnerVenueHistorySuccess:
+      description: Operation Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    venue:
+                      type: object
+                      properties:
+                        price:
+                          type: integer
+                          example: 10000
+                        date:
+                          type: string
+                          example: "2022-04-07T21:08:54.73+07:00"
+                        hours:
+                          type: string
+                          example: 09:00 - 10:00
+                    user:
+                      type: object
+                      properties:
+                        username:
+                          type: string
+                          example: bagusadi
+                        fullname:
+                          type: string
+                          example: Bagus Adi Praguna
+                        email:
+                          type: string
+                          example: bagusadi@mail.com
+              code:
+                type: integer
+                example: 200
+              message:
+                type: string
+                example: success to get owner venue history
+    getOwnerVenueHistoryFailed:
+      description: Operation Failed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 400
+              message:
+                type: string
+                example: failed to get owner venue history
