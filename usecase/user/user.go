@@ -19,16 +19,16 @@ func NewUserUseCase(userRepo _userRepository.UserRepositoryInterface) UserUseCas
 	}
 }
 
-func (uuc *UserUseCase) GetUserProfile(id int) (_entities.UserResponse, error) {
+func (uuc *UserUseCase) GetUserProfile(id int) (_entities.User, error) {
 	//TODO implement me
-	userResponse := _entities.UserResponse{}
+
 	user, _, err := uuc.userRepository.GetUserById(id)
 
 	if err != nil {
-		return userResponse, err
+		return user, err
 	}
-	copier.Copy(&userResponse, &user)
-	return userResponse, nil
+
+	return user, nil
 }
 
 func (uuc *UserUseCase) CreateUser(request _entities.User) (_entities.User, error) {

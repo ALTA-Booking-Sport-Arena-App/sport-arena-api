@@ -28,11 +28,11 @@ func (ah *AuthHandler) LoginHandler() echo.HandlerFunc {
 		var login entities.User
 		err := c.Bind(&login)
 		if err != nil {
-			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("Error to bind data"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("Error to bind data", http.StatusBadRequest))
 		}
 		token, errorLogin := ah.authUseCase.Login(login.Email, login.Password)
 		if errorLogin != nil {
-			return c.JSON(http.StatusBadRequest, helper.ResponseFailed(fmt.Sprintf("%v", errorLogin)))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed(fmt.Sprintf("%v", errorLogin), http.StatusBadRequest))
 		}
 		extract, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -53,6 +53,6 @@ func (ah *AuthHandler) LoginHandler() echo.HandlerFunc {
 			"token": token,
 			"role":  role,
 		}
-		return c.JSON(http.StatusOK, helper.ResponseSuccess("Successfully logged in", responseToken))
+		return c.JSON(http.StatusOK, helper.ResponseSuccess("Successfully logged in", http.StatusOK, responseToken))
 	}
 }
