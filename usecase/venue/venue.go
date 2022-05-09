@@ -35,6 +35,14 @@ func (cuc *VenueUseCase) GetAllList(name string, category string) ([]_entities.G
 		return getVenues, err
 	}
 	copier.Copy(&getVenues, &venues)
+	operational, err := cuc.venueRepository.GetOperational()
+	for i := range operational {
+		for j := range getVenues {
+			if operational[i].VenueID == getVenues[j].ID {
+				getVenues[j].Price = operational[i].Price
+			}
+		}
+	}
 	return getVenues, err
 }
 

@@ -63,6 +63,15 @@ func (ur *VenueRepository) GetAllList(name string, category string) ([]_entities
 	return venues, nil
 }
 
+func (ur *VenueRepository) GetOperational() ([]_entities.Step2, error) {
+	var operational []_entities.Step2
+	tx := ur.DB.Find(&operational)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+	return operational, nil
+}
+
 func (ur *VenueRepository) UpdateStep2(id int, request []_entities.Step2, facility []_entities.VenueFacility) ([]_entities.Step2, int, error) {
 	yx := ur.DB.Model(&[]_entities.Step2{}).Where("venue_id = ?", id).Updates(&request)
 	if yx.Error != nil {

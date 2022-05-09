@@ -23,9 +23,9 @@ type Venue struct {
 }
 
 type GetVenuesResponse struct {
-	ID    uint    `json:"id" form:"id"`
-	Name  string  `json:"name" form:"name"`
-	City  string  `json:"location" form:"location"`
-	Image string  `json:"image" form:"image"`
-	Step2 []Step2 `gorm:"foreignKey:VenueID;references:ID" json:"operational" form:"operational"`
+	ID    uint   `json:"id" form:"id"`
+	Name  string `json:"name" form:"name"`
+	City  string `json:"location" form:"location"`
+	Image string `json:"image" form:"image"`
+	Price uint   `json:"price" form:"price"`
 }
