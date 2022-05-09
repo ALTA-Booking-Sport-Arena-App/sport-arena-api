@@ -49,12 +49,12 @@ func (ur *VenueRepository) GetAllList(name string, category string) ([]_entities
 	if name != "" || category != "" {
 		name = "%" + name + "%"
 		category = "%" + category + "%"
-		tx = ur.DB.Where("name LIKE ? OR category LIKE ?", name, category).Find(&venues)
+		tx = ur.DB.Preload("Step2").Where("name LIKE ? OR category LIKE ?", name, category).Find(&venues)
 		if tx.Error != nil {
 			return nil, tx.Error
 		}
 	} else {
-		tx = ur.DB.Find(&venues)
+		tx = ur.DB.Preload("Step2").Find(&venues)
 		if tx.Error != nil {
 			return nil, tx.Error
 		}
