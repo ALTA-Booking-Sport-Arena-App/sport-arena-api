@@ -24,7 +24,7 @@ func (uh *FacilityHandler) GetAllFacilityHandler() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		facility, err := uh.facilityUseCase.GetAllFacility()
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed get all facilities"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed get all facilities", http.StatusBadRequest))
 		}
 
 		responseFacilities := []map[string]interface{}{}
@@ -37,7 +37,7 @@ func (uh *FacilityHandler) GetAllFacilityHandler() echo.HandlerFunc {
 			responseFacilities = append(responseFacilities, response)
 		}
 
-		return c.JSON(http.StatusOK, helper.ResponseSuccess("success get all facilities", responseFacilities))
+		return c.JSON(http.StatusOK, helper.ResponseSuccess("success get all facilities", http.StatusOK, responseFacilities))
 	}
 }
 
@@ -48,13 +48,13 @@ func (uh *FacilityHandler) CreateFacilityHandler() echo.HandlerFunc {
 
 		err := c.Bind(&param)
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed(err.Error(), http.StatusBadRequest))
 		}
 		_, err = uh.facilityUseCase.CreateFacility(param)
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("created facility failed"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("created facility failed", http.StatusBadRequest))
 		}
-		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("created facility successfully"))
+		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("created facility successfully", http.StatusOK))
 	}
 
 }
@@ -69,16 +69,16 @@ func (uh *FacilityHandler) UpdateFacilityHandler() echo.HandlerFunc {
 		err := c.Bind(&param)
 
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed(err.Error(), http.StatusBadRequest))
 		}
 		_, rows, err := uh.facilityUseCase.UpdateFacility(uint(id), param)
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("updated facility failed"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("updated facility failed", http.StatusBadRequest))
 		}
 		if rows == 0 {
-			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("data not found"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("data not found", http.StatusBadRequest))
 		}
-		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("updated facility successfully"))
+		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("updated facility successfully", http.StatusOK))
 	}
 }
 
@@ -90,8 +90,8 @@ func (uh *FacilityHandler) DeleteFacilityHandler() echo.HandlerFunc {
 
 		err := uh.facilityUseCase.DeleteFacility(id)
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("deleted facility failed"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("deleted facility failed", http.StatusBadRequest))
 		}
-		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("deleted facility successfully"))
+		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("deleted facility successfully", http.StatusOK))
 	}
 }

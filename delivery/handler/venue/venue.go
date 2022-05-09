@@ -28,51 +28,51 @@ func (eh *VenueHandler) CreateStep1Handler() echo.HandlerFunc {
 		// check login status
 		idToken, errToken := _middlewares.ExtractToken(c)
 		if errToken != nil {
-			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("unauthorized", http.StatusBadRequest))
 		}
 		// binding data
 		var venue _entities.Venue
 		errBind := c.Bind(&venue)
 		if errBind != nil {
-			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("error to bind data"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error to bind data", http.StatusBadRequest))
 		}
 
 		// binding image
 		fileData, fileInfo, err_binding_image := c.Request().FormFile("image")
 		if err_binding_image != nil {
-			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error to bind image"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error to bind image", http.StatusBadRequest))
 		}
 		// check file CheckFileExtension
 		_, err_check_extension := image.CheckImageFileExtension(fileInfo.Filename)
 		if err_check_extension != nil {
-			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error checking file extension"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error checking file extension", http.StatusBadRequest))
 		}
 		// check file size
 		err_check_size := image.CheckImageFileSize(fileInfo.Size)
 		if err_check_size != nil {
-			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error checking file size"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error checking file size", http.StatusBadRequest))
 		}
 		fileName := "user_profile_id_" + strconv.Itoa(idToken)
 		// upload the photo
 		var err_upload_photo error
 		theUrl, err_upload_photo := image.UploadImage("venues", fileName, fileData)
 		if err_upload_photo != nil {
-			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error to upload file"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error to upload file", http.StatusBadRequest))
 		}
 
 		venue.UserID = uint(idToken)
 		imageURL := theUrl
 		data, rows, err := eh.venueUseCase.CreateStep1(venue, imageURL)
 		if err != nil {
-			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed create event"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to create event", http.StatusBadRequest))
 		}
 		if rows == 0 {
-			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("data not found"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("data not found", http.StatusBadRequest))
 		}
 		responseVenue := map[string]interface{}{
 			"id": data.ID,
 		}
-		return c.JSON(http.StatusOK, helper.ResponseSuccess("success create venue", responseVenue))
+		return c.JSON(http.StatusOK, helper.ResponseSuccess("success create venue", http.StatusOK, responseVenue))
 	}
 }
 
@@ -83,7 +83,7 @@ func (uh *VenueHandler) CreateStep2Handler() echo.HandlerFunc {
 
 		err := c.Bind(&param)
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed(err.Error(), http.StatusBadRequest))
 		}
 
 		var operationalRequest = []_entities.Step2{}
@@ -112,12 +112,12 @@ func (uh *VenueHandler) CreateStep2Handler() echo.HandlerFunc {
 
 		_, rows, err := uh.venueUseCase.CreateStep2(operationalRequest, venuefacility)
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed create venue"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("Failed created venue", http.StatusBadRequest))
 		}
 		if rows == 0 {
-			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("data not found"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("Data not found", http.StatusBadRequest))
 		}
-		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("success create venue"))
+		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("Success create venue", http.StatusOK))
 	}
 
 }
@@ -127,12 +127,13 @@ func (uh *VenueHandler) GetAllListHandler() echo.HandlerFunc {
 		//query param for searching venue
 		name := c.QueryParam("name")
 		category := c.QueryParam("category")
-		getVenues, err := uh.venueUseCase.GetAllList(name, category)
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed get venues"))
-		}
 
-		return c.JSON(http.StatusOK, helper.ResponseSuccess("success get venues", getVenues))
+		getVenues, err := uh.venueUseCase.GetAllList(name, category)
+
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("Failed to get venue", http.StatusBadRequest))
+		}
+		return c.JSON(http.StatusOK, helper.ResponseSuccess("Success to get venue", http.StatusOK, getVenues))
 	}
 }
 
@@ -143,7 +144,7 @@ func (uh *VenueHandler) UpdateStep2Handler() echo.HandlerFunc {
 
 		err := c.Bind(&param)
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed(err.Error(), http.StatusBadRequest))
 		}
 
 		VenueID, _ := strconv.Atoi(c.Param("id"))
@@ -173,12 +174,13 @@ func (uh *VenueHandler) UpdateStep2Handler() echo.HandlerFunc {
 
 		data, rows, err := uh.venueUseCase.UpdateStep2(uint(VenueID), operationalRequest, venuefacility)
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed(err.Error(), http.StatusBadRequest))
 		}
 		if rows == 0 {
-			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("data not found"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("data not found", http.StatusBadRequest))
 		}
-		return c.JSON(http.StatusOK, helper.ResponseSuccess("success update venue", data))
+
+		return c.JSON(http.StatusOK, helper.ResponseSuccess("success update venue", http.StatusOK, data))
 	}
 
 }
@@ -190,19 +192,19 @@ func (eh *VenueHandler) UpdateStep1Handler() echo.HandlerFunc {
 		var venue _entities.Venue
 		errBind := c.Bind(&venue)
 		if errBind != nil {
-			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("error to bind data"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error to bind data", http.StatusBadRequest))
 		}
 
 		id, _ := strconv.Atoi(c.Param("id"))
 
 		_, rows, err := eh.venueUseCase.UpdateStep1(venue, uint(id))
 		if err != nil {
-			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed update venue"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed update venue", http.StatusBadRequest))
 		}
 		if rows == 0 {
-			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("data not found"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("data not found", http.StatusBadRequest))
 		}
-		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("success update venue"))
+		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("success update venue", http.StatusBadRequest))
 	}
 }
 
@@ -214,33 +216,33 @@ func (eh *VenueHandler) UpdateVenueImageHandler() echo.HandlerFunc {
 		// binding image
 		fileData, fileInfo, err_binding_image := c.Request().FormFile("image")
 		if err_binding_image != nil {
-			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error to bind image"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error to bind image", http.StatusBadRequest))
 		}
 		// check file CheckFileExtension
 		_, err_check_extension := image.CheckImageFileExtension(fileInfo.Filename)
 		if err_check_extension != nil {
-			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error checking file extension"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error checking file extension", http.StatusBadRequest))
 		}
 		// check file size
 		err_check_size := image.CheckImageFileSize(fileInfo.Size)
 		if err_check_size != nil {
-			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error checking file size"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error checking file size", http.StatusBadRequest))
 		}
 		fileName := "update_venue_id_" + strconv.Itoa(id)
 		// upload the photo
 		var err_upload_photo error
 		theUrl, err_upload_photo := image.UploadImage("venues", fileName, fileData)
 		if err_upload_photo != nil {
-			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error to upload file"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error to upload file", http.StatusBadRequest))
 		}
 		rows, err := eh.venueUseCase.UpdateVenueImage(theUrl, uint(id))
 		if err != nil {
-			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed update venue"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed update venue", http.StatusBadRequest))
 		}
 		if rows == 0 {
-			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("data not found"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("data not found", http.StatusBadRequest))
 		}
-		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("success update venue"))
+		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("success update venue", http.StatusOK))
 	}
 }
 
@@ -252,12 +254,12 @@ func (uh *VenueHandler) DeleteVenueHandler() echo.HandlerFunc {
 
 		rows, err := uh.venueUseCase.DeleteVenue(uint(id))
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("deleted venue failed"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("deleted venue failed", http.StatusBadRequest))
 		}
 		if rows == 0 {
-			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("data not found"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("data not found", http.StatusBadRequest))
 		}
-		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("deleted venue successfully"))
+		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("deleted venue successfully", http.StatusOK))
 	}
 }
 
@@ -267,10 +269,10 @@ func (uh *VenueHandler) GetVenueByIdHandler() echo.HandlerFunc {
 		id, _ := strconv.Atoi(c.Param("id"))
 		venue, rows, err := uh.venueUseCase.GetVenueById(id)
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to fetch data"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to fetch data", http.StatusBadRequest))
 		}
 		if rows == 0 {
-			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("data not found"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("data not found", http.StatusBadRequest))
 		}
 
 		step2 := []map[string]interface{}{}
@@ -311,6 +313,6 @@ func (uh *VenueHandler) GetVenueByIdHandler() echo.HandlerFunc {
 			},
 		}
 
-		return c.JSON(http.StatusOK, helper.ResponseSuccess("success get detail arena", responseVenue))
+		return c.JSON(http.StatusOK, helper.ResponseSuccess("success get detail arena", http.StatusOK, responseVenue))
 	}
 }

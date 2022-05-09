@@ -9,7 +9,7 @@ type UserUseCaseInterface interface {
 	DeleteUser(id int) error
 	UpdateUser(id int, request _entities.User) (_entities.User, int, error)
 	GetUserById(id int) (_entities.User, int, error)
-	GetUserProfile(id int) (_entities.UserResponse, error)
+	GetUserProfile(id int) (_entities.User, error)
 	UpdateUserImage(image string, idToken int) (int, error)
 	RequestOwner(id int, certificate string, requestOwner _entities.User) (int, error)
 	GetListUsers() ([]_entities.ListUsersResponse, error)
