@@ -131,7 +131,18 @@ func (uh *VenueHandler) GetAllListHandler() echo.HandlerFunc {
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed get venues"))
 		}
-		return c.JSON(http.StatusOK, helper.ResponseSuccess("success get venues", getVenues))
+		response := []map[string]interface{}{}
+		for i := 0; i < len(getVenues); i++ {
+			getResponse := map[string]interface{}{
+				"id":       getVenues[i].ID,
+				"name":     getVenues[i].Name,
+				"location": getVenues[i].City,
+				"image":    getVenues[i].Image,
+				"price":    getVenues[i].Step2[0].Price,
+			}
+			response = append(response, getResponse)
+		}
+		return c.JSON(http.StatusOK, helper.ResponseSuccess("success get venues", response))
 	}
 }
 
