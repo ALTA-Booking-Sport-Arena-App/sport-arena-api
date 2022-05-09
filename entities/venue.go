@@ -1,8 +1,6 @@
 package entities
 
 import (
-	"time"
-
 	"gorm.io/gorm"
 )
 
@@ -15,7 +13,6 @@ type Venue struct {
 	Description   string          `json:"description" form:"description"`
 	City          string          `json:"city" form:"city"`
 	Address       string          `json:"address" form:"address"`
-	BookingTime   time.Time       `json:"booking_time" form:"booking_time"`
 	Step2         []Step2         `gorm:"foreignKey:VenueID;references:ID" json:"operational_hours" form:"operational_hours"`
 	User          User            `gorm:"foreignKey:UserID;references:ID" json:"user" form:"user"`
 	Category      Category        `gorm:"foreignKey:CategoryID;references:ID" json:"category" form:"category"`
