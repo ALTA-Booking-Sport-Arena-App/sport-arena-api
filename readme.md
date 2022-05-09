@@ -123,5 +123,5 @@ If you have a suggestion that would make this better, please fork the repo and c
 
 [![](https://img.shields.io/badge/LinkedIn_Haudhi-0077B5?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/haudhiizza/)
 [![](https://img.shields.io/badge/LinkedIn_Hafidh-0077B5?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/hafidhirsyad/)
-![](https://img.shields.io/badge/LinkedIn_Husnul-0077B5?style=flat&logo=linkedin&logoColor=white)
+[![](https://img.shields.io/badge/LinkedIn_Husnul-0077B5?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/husnul-nawafil-9653a1195)
 
