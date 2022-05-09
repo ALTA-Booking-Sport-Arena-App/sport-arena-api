@@ -4,8 +4,8 @@ import (
 	"capstone/delivery/helper"
 	_middlewares "capstone/delivery/middlewares"
 	_entities "capstone/entities"
-	_payment "capstone/usecase/payment"
-	"fmt"
+	_payment "capstone/usecase/transaction"
+	_userUseCase "capstone/usecase/user"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -13,10 +13,11 @@ import (
 
 type PaymentHandler struct {
 	paymentUseCase _payment.PaymentUseCaseInterface
+	userUseCase    _userUseCase.UserUseCaseInterface
 }
 
-func NewFacilityHandler(paymentUseCase _payment.PaymentUseCaseInterface) PaymentHandler {
-	return PaymentHandler{paymentUseCase}
+func NewPaymentHandler(paymentUseCase _payment.PaymentUseCaseInterface, userUseCase _userUseCase.UserUseCaseInterface) PaymentHandler {
+	return PaymentHandler{paymentUseCase, userUseCase}
 }
 
 func (ph *PaymentHandler) GetAllHistoryHandler() echo.HandlerFunc {
@@ -24,41 +25,86 @@ func (ph *PaymentHandler) GetAllHistoryHandler() echo.HandlerFunc {
 		idToken, errToken := _middlewares.ExtractToken(c)
 
 		if errToken != nil {
-			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("Unauthorized"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("Unauthorized", http.StatusBadRequest))
 		}
 
 		history, err := ph.paymentUseCase.GetAllHistory(idToken)
 
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed get all histories"))
+		historyResponse := []map[string]interface{}{}
+		for i := 0; i < len(history); i++ {
+			response := map[string]interface{}{
+				"id": history[i].ID,
+				"venue": map[string]interface{}{
+					"name":       history[i].Venue.Name,
+					"location":   history[i].Venue.Address,
+					"price":      history[i].TotalPrice,
+					"image":      history[i].Venue.Image,
+					"status":     history[i].Status,
+					"day":        history[i].Day,
+					"start_date": history[i].StartDate,
+					"end_date":   history[i].EndDate,
+				},
+			}
+			historyResponse = append(historyResponse, response)
 		}
 
-		return c.JSON(http.StatusOK, helper.ResponseSuccess("success get all histories", history))
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed get all histories", http.StatusBadRequest))
+		}
+
+		return c.JSON(http.StatusOK, helper.ResponseSuccess("success get all histories", http.StatusOK, historyResponse))
 	}
 }
 
-func (ph *PaymentHandler) CreateFacilityHandler() echo.HandlerFunc {
+func (ph *PaymentHandler) CreateBookingHandler() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var booking _entities.Payment
 
 		idToken, errToken := _middlewares.ExtractToken(c)
 
 		if errToken != nil {
-			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("Unauthorized"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("Unauthorized", http.StatusBadRequest))
 		}
 
-		booking.UserID = idToken
+		userProfile, _ := ph.userUseCase.GetUserProfile(idToken)
 
-		fmt.Println("booking-handler", booking)
+		booking.UserID = uint(idToken)
+		booking.User = userProfile
 
-		err := c.Bind(&booking)
+		errBind := c.Bind(&booking)
+
+		if errBind != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed(errBind.Error(), http.StatusBadRequest))
+		}
+		newBooking, errCreate := ph.paymentUseCase.CreateTransaction(booking)
+
+		response := map[string]interface{}{
+			"payment_url": newBooking.PaymentURL,
+		}
+
+		if errCreate != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("created booking failed", http.StatusBadRequest))
+		}
+		return c.JSON(http.StatusOK, helper.ResponseSuccess("created booking successfully", http.StatusOK, response))
+	}
+}
+
+func (ph *PaymentHandler) GetNotification() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		var input _entities.TransactionNotificationInput
+
+		err := c.Bind(&input)
+
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("Failed to bind data", http.StatusBadRequest))
 		}
-		_, err = ph.paymentUseCase.CreateBooking(booking)
+
+		err = ph.paymentUseCase.ProcessPayment(input)
+
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("created booking failed"))
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("Failed to process notification", http.StatusBadRequest))
 		}
-		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("created booking successfully"))
+
+		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("Failed to process notification", http.StatusOK))
 	}
 }

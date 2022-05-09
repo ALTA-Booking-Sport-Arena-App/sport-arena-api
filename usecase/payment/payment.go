@@ -2,36 +2,52 @@ package payment
 
 import (
 	_entities "capstone/entities"
-	_paymentRepo "capstone/repository/payment"
 	"fmt"
+	"os"
+	"strconv"
+
+	_midtrans "github.com/veritrans/go-midtrans"
 )
 
-type PaymentUseCase struct {
-	paymentRepository _paymentRepo.PaymentRepositryInterface
+type service struct {
 }
 
-func NewFacilityUseCase(paymentRepo _paymentRepo.PaymentRepositryInterface) PaymentUseCaseInterface {
-	return &PaymentUseCase{
-		paymentRepository: paymentRepo,
+type Service interface {
+	GetPaymentURL(transaction _entities.Payment, user _entities.User) (string, error)
+}
+
+func NewService() *service {
+	return &service{}
+}
+
+func (s *service) GetPaymentURL(transaction _entities.Payment, user _entities.User) (string, error) {
+	midclient := _midtrans.NewClient()
+	midclient.ServerKey = os.Getenv("SERVER_KEY")
+	midclient.ClientKey = os.Getenv("CLIENT_KEY")
+	midclient.APIEnvType = _midtrans.Sandbox
+
+	fmt.Println(transaction.ID)
+
+	snapGateway := _midtrans.SnapGateway{
+		Client: midclient,
 	}
-}
 
-func (pus *PaymentUseCase) GetAllHistory(id int) ([]_entities.Payment, error) {
-	// var historyResponse []_entities.PaymentResponse
+	snapReq := &_midtrans.SnapReq{
+		CustomerDetail: &_midtrans.CustDetail{
+			Email: user.Email,
+			FName: user.FullName,
+		},
 
-	history, err := pus.paymentRepository.GetAllHistory(id)
+		TransactionDetails: _midtrans.TransactionDetails{
+			OrderID:  strconv.Itoa(int(transaction.ID)),
+			GrossAmt: int64(transaction.TotalPrice),
+		},
+	}
 
-	// fmt.Println("historyUseCase", history)
+	snapTokenResp, err := snapGateway.GetToken(snapReq)
+	if err != nil {
+		return "", err
+	}
 
-	// copier.Copy(&historyResponse, &history)
-
-	// fmt.Println("historyResponseUseCase", historyResponse)
-	return history, err
-}
-
-func (pus *PaymentUseCase) CreateBooking(booking _entities.Payment) (_entities.Payment, error) {
-	fmt.Println("booking-usecase", booking)
-	booking, err := pus.paymentRepository.CreateBooking(booking)
-
-	return booking, err
+	return snapTokenResp.RedirectURL, nil
 }
