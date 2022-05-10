@@ -56,6 +56,24 @@ func (ph *PaymentHandler) GetAllHistoryHandler() echo.HandlerFunc {
 	}
 }
 
+func (ph *PaymentHandler) GetOwnerHistoryHandler() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		idToken, errToken := _middlewares.ExtractToken(c)
+
+		if errToken != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("Unauthorized", http.StatusBadRequest))
+		}
+
+		historyOwner, err := ph.paymentUseCase.GetOwnerHistory(idToken)
+
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed get all owner histories", http.StatusBadRequest))
+		}
+
+		return c.JSON(http.StatusOK, helper.ResponseSuccess("success get all owner histories", http.StatusOK, historyOwner))
+	}
+}
+
 func (ph *PaymentHandler) CreateBookingHandler() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var booking _entities.Payment
@@ -76,6 +94,11 @@ func (ph *PaymentHandler) CreateBookingHandler() echo.HandlerFunc {
 		if errBind != nil {
 			return c.JSON(http.StatusBadRequest, helper.ResponseFailed(errBind.Error(), http.StatusBadRequest))
 		}
+
+		if booking.TotalPrice <= 0 {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("Total price must be greater than 0", http.StatusBadRequest))
+		}
+
 		newBooking, errCreate := ph.paymentUseCase.CreateTransaction(booking)
 
 		response := map[string]interface{}{

@@ -2,7 +2,6 @@ package payment
 
 import (
 	_entities "capstone/entities"
-	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -19,7 +18,6 @@ func NewPaymentRepository(db *gorm.DB) *PaymentRepository {
 
 func (pr *PaymentRepository) GetAllHistory(id int) ([]_entities.Payment, error) {
 	var history []_entities.Payment
-	fmt.Println("historyRepository", history)
 
 	tx := pr.database.Preload("User").Preload("Venue").Where("user_id = ?", id).Find(&history)
 
@@ -28,6 +26,18 @@ func (pr *PaymentRepository) GetAllHistory(id int) ([]_entities.Payment, error) 
 	}
 
 	return history, nil
+}
+
+func (pr *PaymentRepository) GetOwnerHistory(id int) ([]_entities.Venue, error) {
+	var venueOwner []_entities.Venue
+
+	tx := pr.database.Preload("Payment").Preload("Payment.User").Where("user_id = ?", id).Find(&venueOwner)
+
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+
+	return venueOwner, nil
 }
 
 func (pr *PaymentRepository) GetByIdTransaction(id int) (_entities.Payment, error) {

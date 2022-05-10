@@ -60,4 +60,5 @@ func PaymentArenaPath(e *echo.Echo, ph _paymentHandler.PaymentHandler) {
 	e.GET("/histories", ph.GetAllHistoryHandler(), _middlewares.JWTMiddleware())
 	e.POST("/booking", ph.CreateBookingHandler(), _middlewares.JWTMiddleware())
 	e.POST("/transactions/notification", ph.GetNotification())
+	e.GET("/owner/histories", ph.GetOwnerHistoryHandler(), _middlewares.JWTMiddleware())
 }
