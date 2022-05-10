@@ -121,21 +121,32 @@ func (ur *VenueRepository) UpdateVenueImage(image string, id uint) (int, error) 
 
 func (ur *VenueRepository) DeleteVenue(id uint) (int, error) {
 
-	yx := ur.DB.Unscoped().Where("venue_id = ?", id).Delete(&_entities.Step2{})
-	if yx.Error != nil {
-		return 0, yx.Error
-	}
-	if yx.RowsAffected == 0 {
-		return 0, yx.Error
+	var step2 []_entities.Step2
+	ux := ur.DB.Where("venue_id = ?", id).Find(&step2)
+
+	if ux.RowsAffected != 0 {
+		yx := ur.DB.Unscoped().Where("venue_id = ?", id).Delete(&_entities.Step2{})
+		if yx.Error != nil {
+			return 0, yx.Error
+		}
+		if yx.RowsAffected == 0 {
+			return 0, yx.Error
+		}
 	}
 
-	ax := ur.DB.Unscoped().Where("venue_id = ?", id).Delete(&_entities.VenueFacility{})
-	if ax.Error != nil {
-		return 0, ax.Error
+	var facility []_entities.VenueFacility
+	px := ur.DB.Where("venue_id = ?", id).Find(&facility)
+
+	if px.RowsAffected != 0 {
+		ax := ur.DB.Unscoped().Where("venue_id = ?", id).Delete(&_entities.VenueFacility{})
+		if ax.Error != nil {
+			return 0, ax.Error
+		}
+		if ax.RowsAffected == 0 {
+			return 0, ax.Error
+		}
 	}
-	if ax.RowsAffected == 0 {
-		return 0, ax.Error
-	}
+
 	tx := ur.DB.Unscoped().Delete(&_entities.Venue{}, id)
 	if tx.Error != nil {
 		return 0, tx.Error
