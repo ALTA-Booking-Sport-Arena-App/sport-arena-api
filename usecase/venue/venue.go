@@ -43,6 +43,11 @@ func (cuc *VenueUseCase) GetAllList(name string, category string) ([]_entities.G
 			}
 		}
 	}
+	for i := range venues {
+		categoryforeach, _ := cuc.venueRepository.GetCategoryById(int(venues[i].CategoryID))
+		getVenues[i].Category = categoryforeach[0].Name
+	}
+
 	return getVenues, err
 }
 

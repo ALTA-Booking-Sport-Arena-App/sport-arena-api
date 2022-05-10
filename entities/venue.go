@@ -20,9 +20,10 @@ type Venue struct {
 }
 
 type GetVenuesResponse struct {
-	ID    uint   `json:"id" form:"id"`
-	Name  string `json:"name" form:"name"`
-	City  string `json:"location" form:"location"`
-	Image string `json:"image" form:"image"`
-	Price uint   `json:"price" form:"price"`
+	ID       uint   `json:"id" form:"id"`
+	Name     string `json:"name" form:"name"`
+	Category string `json:"category" form:"category"`
+	City     string `json:"location" form:"location"`
+	Image    string `json:"image" form:"image"`
+	Price    uint   `json:"price" form:"price"`
 }

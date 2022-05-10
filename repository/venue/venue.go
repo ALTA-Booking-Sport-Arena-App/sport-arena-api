@@ -228,3 +228,12 @@ func (ur *VenueRepository) GetStep2ById(id int) ([]_entities.Step2, int, error) 
 	}
 	return venue, int(tx.RowsAffected), nil
 }
+
+func (ur *VenueRepository) GetCategoryById(id int) ([]_entities.Category, error) {
+	var category []_entities.Category
+	tx := ur.DB.Where("id = ?", id).Find(&category)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+	return category, nil
+}
