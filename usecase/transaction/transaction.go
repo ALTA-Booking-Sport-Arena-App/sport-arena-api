@@ -4,7 +4,10 @@ import (
 	_entities "capstone/entities"
 	_paymentRepo "capstone/repository/transaction"
 	"capstone/usecase/payment"
+	"fmt"
 	"strconv"
+
+	"github.com/jinzhu/copier"
 )
 
 type PaymentUseCase struct {
@@ -23,6 +26,20 @@ func (pus *PaymentUseCase) GetAllHistory(id int) ([]_entities.Payment, error) {
 	history, err := pus.paymentRepository.GetAllHistory(id)
 
 	return history, err
+}
+
+func (pus *PaymentUseCase) GetOwnerHistory(id int) ([]_entities.VenueResponse, error) {
+	venueResponse := []_entities.VenueResponse{}
+
+	historyOwner, err := pus.paymentRepository.GetOwnerHistory(id)
+
+	if err != nil {
+		return venueResponse, err
+	}
+
+	copier.Copy(&venueResponse, &historyOwner)
+
+	return venueResponse, nil
 }
 
 func (pus *PaymentUseCase) CreateTransaction(booking _entities.Payment) (_entities.Payment, error) {
@@ -59,6 +76,8 @@ func (pus *PaymentUseCase) ProcessPayment(input _entities.TransactionNotificatio
 		return err
 	}
 
+	fmt.Println("transaction", transaction)
+
 	if input.PaymentType == "credit_card" && input.TransactionStatus == "capture" && input.FraudStatus == "accept" {
 		transaction.Status = "paid"
 	} else if input.TransactionStatus == "settlement" {
@@ -74,8 +93,10 @@ func (pus *PaymentUseCase) ProcessPayment(input _entities.TransactionNotificatio
 	}
 
 	if updatedTransaction.Status == "paid" {
-		updatedTransaction.TotalPrice += updatedTransaction.TotalPrice
+		transaction.TotalPrice = transaction.TotalPrice + updatedTransaction.TotalPrice
 	}
+
+	fmt.Println("updatedTransaction", updatedTransaction)
 
 	return nil
 }

@@ -14,8 +14,8 @@ type Payment struct {
 	PaymentURL string `json:"payment_url" form:"payment_url"`
 	StartDate  string `json:"start_date" form:"start_date"`
 	EndDate    string `json:"end_date" form:"end_date"`
-	Venue      Venue
-	User       User
+	Venue      Venue  `json:"venue" form:"venue"`
+	User       User   `json:"user" form:"user"`
 }
 
 type TransactionNotificationInput struct {
@@ -23,4 +23,15 @@ type TransactionNotificationInput struct {
 	OrderID           string `json:"order_id"`
 	PaymentType       string `json:"payment_type"`
 	FraudStatus       string `json:"fraud_status"`
+}
+
+type PaymentResponse struct {
+	ID         uint         `gorm:"primarykey" json:"id"`
+	TotalPrice uint         `json:"total_price" form:"total_price"`
+	Day        string       `json:"day" form:"day"`
+	Status     string       `json:"status" form:"status"`
+	PaymentURL string       `json:"payment_url" form:"payment_url"`
+	StartDate  string       `json:"start_date" form:"start_date"`
+	EndDate    string       `json:"end_date" form:"end_date"`
+	User       UserResponse `json:"user" form:"user"`
 }

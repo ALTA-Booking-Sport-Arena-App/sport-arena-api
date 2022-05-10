@@ -531,9 +531,9 @@ paths:
             schema:
               type: object
               properties:
-                venue_name:
+                name:
                   type: string
-                detail:
+                description:
                   type: string
                 address:
                   type: string
@@ -541,7 +541,7 @@ paths:
                   type: string
                 category_id:
                   type: integer
-                venue_photo:
+                image:
                   type: string
                   format: binary
       responses:
@@ -565,21 +565,21 @@ paths:
                 venue_id:
                   type: integer
                   example: 1
-                days:
+                day:
                   type: array
                   items:
                     type: string
                     example: monday
-                open_hours:
+                open_hour:
                   type: string
                   example: "11:00"
-                close_hours:
+                close_hour:
                   type: string
                   example: "17:00"
                 price:
                   type: integer
                   example: 200000
-                facility:
+                facility_id:
                   type: array
                   items:
                     type: integer
@@ -665,15 +665,17 @@ paths:
             schema:
               type: object
               properties:
-                venue_name:
+                name:
                   type: string
-                detail:
+                description:
                   type: string
                 address:
                   type: string
                 city:
                   type: string
-                venue_photo:
+                category_id:
+                  type: integer
+                image:
                   type: string
                   format: binary
       responses:
@@ -703,21 +705,21 @@ paths:
                 venue_id:
                   type: integer
                   example: 1
-                days:
+                day:
                   type: array
                   items:
                     type: string
-                    example: senin
-                open_hours:
+                    example: monday
+                open_hour:
                   type: string
-                  example: "2022-04-07T21:08:54.73+07:00"
-                close_hours:
+                  example: "11:00"
+                close_hour:
                   type: string
-                  example: "2022-04-07T21:08:54.73+07:00"
+                  example: "17:00"
                 price:
                   type: integer
                   example: 200000
-                facility:
+                facility_id:
                   type: array
                   items:
                     type: integer
