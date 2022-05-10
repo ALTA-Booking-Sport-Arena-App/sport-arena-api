@@ -3,6 +3,7 @@ package venue
 import (
 	_entities "capstone/entities"
 	"errors"
+	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -73,25 +74,59 @@ func (ur *VenueRepository) GetOperational() ([]_entities.Step2, error) {
 }
 
 func (ur *VenueRepository) UpdateStep2(id int, request []_entities.Step2, facility []_entities.VenueFacility) ([]_entities.Step2, int, error) {
-	yx := ur.DB.Model(&[]_entities.Step2{}).Where("venue_id = ?", id).Updates(&request)
+	var olddata _entities.Step2
+
+	qx := ur.DB.Model(&_entities.Step2{}).Where("venue_id = ?", id).First(&olddata).Error
+	if qx != nil {
+		return request, 0, qx
+	}
+
+	for key := range request {
+		if request[key].OpenHour == "" {
+			request[key].OpenHour = olddata.OpenHour
+		}
+		if request[key].CloseHour == "" {
+			request[key].CloseHour = olddata.CloseHour
+		}
+		if request[key].Price == 0 {
+			request[key].Price = olddata.Price
+		}
+	}
+
+	xx := ur.DB.Unscoped().Where("venue_id = ?", id).Delete(&_entities.Step2{}).Error
+	if xx != nil {
+		return request, 0, xx
+	}
+
+	yx := ur.DB.Save(&request)
 	if yx.Error != nil {
+		fmt.Println("yx", yx.Error)
 		return request, 0, yx.Error
 	}
 
-	tx := ur.DB.Model(&[]_entities.VenueFacility{}).Where("venue_id = ?", id).Updates(&facility)
-	if tx.Error != nil {
-		return request, 0, tx.Error
+	var olddatafacility _entities.VenueFacility
+
+	sx := ur.DB.Model(&_entities.VenueFacility{}).Where("venue_id = ?", id).First(&olddatafacility).Error
+	if sx != nil {
+		return request, 0, sx
 	}
 
-	// yx := ur.DB.Save(&request)
-	// if yx.Error != nil {
-	// 	return request, 0, yx.Error
+	// for key := range facility {
+	// 	if facility[key].FacilityID == 0 {
+	// 		facility[key].FacilityID = olddatafacility.FacilityID
+	// 	}
 	// }
 
-	// tx := ur.DB.Save(&facility)
-	// if tx.Error != nil {
-	// 	return request, 0, tx.Error
-	// }
+	xx = ur.DB.Unscoped().Where("venue_id = ?", id).Delete(&_entities.VenueFacility{}).Error
+	if xx != nil {
+		return request, 0, xx
+	}
+
+	yx = ur.DB.Save(&facility)
+	if yx.Error != nil {
+		fmt.Println("yx", yx.Error)
+		return request, 0, yx.Error
+	}
 
 	return request, int(yx.RowsAffected), nil
 }
