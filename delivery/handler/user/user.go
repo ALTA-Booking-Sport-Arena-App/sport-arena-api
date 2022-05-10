@@ -33,6 +33,9 @@ func (uh *UserHandler) CreateUserHandler() echo.HandlerFunc {
 		if errBind != nil {
 			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("Error binding data", http.StatusBadRequest))
 		}
+		if _, ok := helper.ValidMailAddress(param.Email); !ok {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("Error to validate email", http.StatusBadRequest))
+		}
 		_, err := uh.userUseCase.CreateUser(param)
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("Register failed", http.StatusBadRequest))
