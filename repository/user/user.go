@@ -128,7 +128,7 @@ func (ur *UserRepository) GetListOwners() ([]_entities.User, error) {
 
 func (ur *UserRepository) GetListOwnerRequests() ([]_entities.User, error) {
 	var users []_entities.User
-	tx := ur.DB.Not("role = ?", "admin").Where("status = ?", "pending").Or("status = ?", "reject").Find(&users)
+	tx := ur.DB.Not("role = ?", "admin").Where("status = ?", "pending").Find(&users)
 	if tx.Error != nil {
 		return users, tx.Error
 	}
