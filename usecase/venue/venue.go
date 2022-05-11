@@ -28,7 +28,7 @@ func (cuc *VenueUseCase) CreateStep1(request _entities.Venue, image string) (_en
 	return venue, rows, err
 }
 
-func (cuc *VenueUseCase) GetAllList(name string, category string) ([]_entities.GetVenuesResponse, error) {
+func (cuc *VenueUseCase) GetAllList(name string, category int) ([]_entities.GetVenuesResponse, error) {
 	var getVenues []_entities.GetVenuesResponse
 	venues, err := cuc.venueRepository.GetAllList(name, category)
 	if err != nil {

@@ -44,13 +44,23 @@ func (ur *VenueRepository) CreateStep2(request []_entities.Step2, facility []_en
 	return request, int(yx.RowsAffected), nil
 }
 
-func (ur *VenueRepository) GetAllList(name string, category string) ([]_entities.Venue, error) {
+func (ur *VenueRepository) GetAllList(name string, category int) ([]_entities.Venue, error) {
 	var venues []_entities.Venue
 	var tx *gorm.DB
-	if name != "" || category != "" {
+	if name != "" && category != 0 {
 		name = "%" + name + "%"
-		// category = "%" + category + "%"
+		tx = ur.DB.Preload("Step2").Where("name LIKE ?", name).Where("category_id = ?", category).Find(&venues)
+		if tx.Error != nil {
+			return nil, tx.Error
+		}
+	} else if name != "" {
+		name = "%" + name + "%"
 		tx = ur.DB.Preload("Step2").Where("name LIKE ?", name).Find(&venues)
+		if tx.Error != nil {
+			return nil, tx.Error
+		}
+	} else if category != 0 {
+		tx = ur.DB.Preload("Step2").Where("category_id = ?", category).Find(&venues)
 		if tx.Error != nil {
 			return nil, tx.Error
 		}
