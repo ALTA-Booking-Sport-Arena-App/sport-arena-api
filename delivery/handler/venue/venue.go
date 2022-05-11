@@ -30,6 +30,14 @@ func (eh *VenueHandler) CreateStep1Handler() echo.HandlerFunc {
 		if errToken != nil {
 			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("unauthorized", http.StatusBadRequest))
 		}
+		// check role
+		role, errRole := _middlewares.ExtractRole(c)
+		if errRole != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("unauthorized", http.StatusBadRequest))
+		}
+		if role != "owner" {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("unauthorized", http.StatusBadRequest))
+		}
 		// binding data
 		var venue _entities.Venue
 		errBind := c.Bind(&venue)
@@ -52,7 +60,13 @@ func (eh *VenueHandler) CreateStep1Handler() echo.HandlerFunc {
 		if err_check_size != nil {
 			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error checking file size", http.StatusBadRequest))
 		}
-		fileName := "user_profile_id_" + strconv.Itoa(idToken)
+		venueLength, venueLenErr := eh.venueUseCase.GetAllList("", 0)
+		if venueLenErr != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to create event", http.StatusBadRequest))
+
+		}
+		lastID := venueLength[len(venueLength)-1].ID
+		fileName := "venue_image_" + strconv.Itoa(idToken) + "_" + strconv.Itoa(int(lastID)+1)
 		// upload the photo
 		var err_upload_photo error
 		theUrl, err_upload_photo := image.UploadImage("venues", fileName, fileData)
@@ -80,7 +94,19 @@ func (uh *VenueHandler) CreateStep2Handler() echo.HandlerFunc {
 
 	return func(c echo.Context) error {
 		var param helper.VenueRequestFormat
-
+		// check login status
+		_, errToken := _middlewares.ExtractToken(c)
+		if errToken != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("unauthorized", http.StatusBadRequest))
+		}
+		// check role
+		role, errRole := _middlewares.ExtractRole(c)
+		if errRole != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("unauthorized", http.StatusBadRequest))
+		}
+		if role != "owner" {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("unauthorized", http.StatusBadRequest))
+		}
 		err := c.Bind(&param)
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, helper.ResponseFailed(err.Error(), http.StatusBadRequest))
@@ -141,6 +167,14 @@ func (uh *VenueHandler) UpdateStep2Handler() echo.HandlerFunc {
 
 	return func(c echo.Context) error {
 		var param helper.VenueRequestFormat
+		// check role
+		role, errRole := _middlewares.ExtractRole(c)
+		if errRole != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("unauthorized", http.StatusBadRequest))
+		}
+		if role != "owner" {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("unauthorized", http.StatusBadRequest))
+		}
 
 		err := c.Bind(&param)
 		if err != nil {
@@ -187,6 +221,14 @@ func (uh *VenueHandler) UpdateStep2Handler() echo.HandlerFunc {
 
 func (eh *VenueHandler) UpdateStep1Handler() echo.HandlerFunc {
 	return func(c echo.Context) error {
+		// check role
+		role, errRole := _middlewares.ExtractRole(c)
+		if errRole != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("unauthorized", http.StatusBadRequest))
+		}
+		if role != "owner" {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("unauthorized", http.StatusBadRequest))
+		}
 
 		// binding data
 		var venue _entities.Venue
@@ -210,6 +252,19 @@ func (eh *VenueHandler) UpdateStep1Handler() echo.HandlerFunc {
 
 func (eh *VenueHandler) UpdateVenueImageHandler() echo.HandlerFunc {
 	return func(c echo.Context) error {
+		// check login status
+		idToken, errToken := _middlewares.ExtractToken(c)
+		if errToken != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("unauthorized", http.StatusBadRequest))
+		}
+		// check role
+		role, errRole := _middlewares.ExtractRole(c)
+		if errRole != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("unauthorized", http.StatusBadRequest))
+		}
+		if role != "owner" {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("unauthorized", http.StatusBadRequest))
+		}
 
 		id, _ := strconv.Atoi(c.Param("id"))
 
@@ -228,7 +283,7 @@ func (eh *VenueHandler) UpdateVenueImageHandler() echo.HandlerFunc {
 		if err_check_size != nil {
 			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error checking file size", http.StatusBadRequest))
 		}
-		fileName := "update_venue_id_" + strconv.Itoa(id)
+		fileName := "venue_image_" + strconv.Itoa(idToken) + "_" + strconv.Itoa(id)
 		// upload the photo
 		var err_upload_photo error
 		theUrl, err_upload_photo := image.UploadImage("venues", fileName, fileData)
@@ -249,6 +304,14 @@ func (eh *VenueHandler) UpdateVenueImageHandler() echo.HandlerFunc {
 func (uh *VenueHandler) DeleteVenueHandler() echo.HandlerFunc {
 
 	return func(c echo.Context) error {
+		// check role
+		role, errRole := _middlewares.ExtractRole(c)
+		if errRole != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("unauthorized", http.StatusBadRequest))
+		}
+		if role != "owner" {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("unauthorized", http.StatusBadRequest))
+		}
 
 		id, _ := strconv.Atoi(c.Param("id"))
 
