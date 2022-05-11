@@ -126,7 +126,7 @@ func (uh *VenueHandler) GetAllListHandler() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		//query param for searching venue
 		name := c.QueryParam("name")
-		category := c.QueryParam("category")
+		category, _ := strconv.Atoi(c.QueryParam("category"))
 
 		getVenues, err := uh.venueUseCase.GetAllList(name, category)
 
