@@ -49,8 +49,8 @@ func (ur *VenueRepository) GetAllList(name string, category string) ([]_entities
 	var tx *gorm.DB
 	if name != "" || category != "" {
 		name = "%" + name + "%"
-		category = "%" + category + "%"
-		tx = ur.DB.Preload("Step2").Where("name LIKE ? OR category LIKE ?", name, category).Find(&venues)
+		// category = "%" + category + "%"
+		tx = ur.DB.Preload("Step2").Where("name LIKE ?", name).Find(&venues)
 		if tx.Error != nil {
 			return nil, tx.Error
 		}
