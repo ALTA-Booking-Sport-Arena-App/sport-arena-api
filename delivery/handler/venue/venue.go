@@ -27,6 +27,7 @@ func (eh *VenueHandler) CreateStep1Handler() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// check login status
 		idToken, errToken := _middlewares.ExtractToken(c)
+
 		if errToken != nil {
 			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("unauthorized", http.StatusBadRequest))
 		}
@@ -65,8 +66,11 @@ func (eh *VenueHandler) CreateStep1Handler() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to create event", http.StatusBadRequest))
 
 		}
+
 		lastID := venueLength[len(venueLength)-1].ID
 		fileName := "venue_image_" + strconv.Itoa(idToken) + "_" + strconv.Itoa(int(lastID)+1)
+
+		// fileName := "venue_image_" + strconv.Itoa(rand.Int())
 		// upload the photo
 		var err_upload_photo error
 		theUrl, err_upload_photo := image.UploadImage("venues", fileName, fileData)
@@ -206,7 +210,7 @@ func (uh *VenueHandler) UpdateStep2Handler() echo.HandlerFunc {
 			venuefacility = append(venuefacility, request)
 		}
 
-		data, rows, err := uh.venueUseCase.UpdateStep2(uint(VenueID), operationalRequest, venuefacility)
+		_, rows, err := uh.venueUseCase.UpdateStep2(uint(VenueID), operationalRequest, venuefacility)
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, helper.ResponseFailed(err.Error(), http.StatusBadRequest))
 		}
@@ -214,7 +218,7 @@ func (uh *VenueHandler) UpdateStep2Handler() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("data not found", http.StatusBadRequest))
 		}
 
-		return c.JSON(http.StatusOK, helper.ResponseSuccess("success update venue", http.StatusOK, data))
+		return c.JSON(http.StatusOK, helper.ResponseSuccessWithoutData("success update venue", http.StatusOK))
 	}
 
 }

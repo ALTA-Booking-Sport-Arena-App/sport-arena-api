@@ -19,7 +19,7 @@ type User struct {
 }
 
 type UserResponse struct {
-	ID                  uint   `gorm:"primarykey" json:"id"`
+	gorm.Model
 	FullName            string `gorm:"not null" json:"fullname" form:"fullname"`
 	Username            string `gorm:"not null;unique" json:"username" form:"username"`
 	Email               string `gorm:"not null;unique" json:"email" form:"email"`
@@ -33,7 +33,7 @@ type UserResponse struct {
 }
 
 type ListUsersResponse struct {
-	gorm.Model
+	ID          uint   `gorm:"primarykey" json:"id"`
 	FullName    string `gorm:"not null" json:"fullname" form:"fullname"`
 	Username    string `gorm:"not null;unique" json:"username" form:"username"`
 	Email       string `gorm:"not null;unique" json:"email" form:"email"`
