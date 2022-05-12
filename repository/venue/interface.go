@@ -12,8 +12,6 @@ type VenueRepositoryInterface interface {
 	UpdateStep2(id int, request []_entities.Step2, facility []_entities.VenueFacility) ([]_entities.Step2, int, error)
 	DeleteVenue(id uint) (int, error)
 	GetVenueById(id int) (_entities.Venue, int, error)
-	GetVenueFacilityById(id int) ([]_entities.VenueFacility, int, error)
-	GetStep2ById(id int) ([]_entities.Step2, int, error)
 	UpdateVenueImage(image string, id uint) (int, error)
 	GetOperational() ([]_entities.Step2, error)
 	GetCategoryById(id int) ([]_entities.Category, error)
