@@ -26,12 +26,12 @@ type TransactionNotificationInput struct {
 }
 
 type PaymentResponse struct {
-	ID         uint         `gorm:"primarykey" json:"id"`
-	TotalPrice uint         `json:"total_price" form:"total_price"`
-	Day        string       `json:"day" form:"day"`
-	Status     string       `json:"status" form:"status"`
-	PaymentURL string       `json:"payment_url" form:"payment_url"`
-	StartDate  string       `json:"start_date" form:"start_date"`
-	EndDate    string       `json:"end_date" form:"end_date"`
-	User       UserResponse `json:"user" form:"user"`
+	ID         uint              `gorm:"primarykey" json:"id"`
+	TotalPrice uint              `json:"total_price" form:"total_price"`
+	Day        string            `json:"day" form:"day"`
+	Status     string            `json:"status" form:"status"`
+	PaymentURL string            `json:"payment_url" form:"payment_url"`
+	StartDate  string            `json:"start_date" form:"start_date"`
+	EndDate    string            `json:"end_date" form:"end_date"`
+	User       ListUsersResponse `json:"user" form:"user"`
 }
