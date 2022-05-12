@@ -15,7 +15,7 @@ func NewCategoryUseCase(categoryRepo _categoryRepository.CategoryRepositoryInter
 	}
 }
 
-func (cuc *CategoryUseCase) GetAllCategory() ([]_entities.Category, error) {
+func (cuc *CategoryUseCase) GetAllCategory() (*_entities.Pagination, error) {
 	category, err := cuc.categoryRepository.GetAllCategory()
 	return category, err
 }

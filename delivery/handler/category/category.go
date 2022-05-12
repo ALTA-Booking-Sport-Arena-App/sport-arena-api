@@ -27,17 +27,17 @@ func (uh *CategoryHandler) GetAllCategoryHandler() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed get all catagories", http.StatusBadRequest))
 		}
 
-		responseCategories := []map[string]interface{}{}
-		for i := 0; i < len(catagory); i++ {
-			response := map[string]interface{}{
-				"id":        catagory[i].ID,
-				"name":      catagory[i].Name,
-				"icon_name": catagory[i].IconName,
-			}
-			responseCategories = append(responseCategories, response)
-		}
+		// responseCategories := []map[string]interface{}{}
+		// for i := 0; i < len(catagory); i++ {
+		// 	response := map[string]interface{}{
+		// 		"id":        catagory[i].ID,
+		// 		"name":      catagory[i].Name,
+		// 		"icon_name": catagory[i].IconName,
+		// 	}
+		// 	responseCategories = append(responseCategories, response)
+		// }
 
-		return c.JSON(http.StatusOK, helper.ResponseSuccess("success get all catagories", http.StatusOK, responseCategories))
+		return c.JSON(http.StatusOK, helper.ResponseSuccess("success get all catagories", http.StatusOK, catagory))
 	}
 }
 
