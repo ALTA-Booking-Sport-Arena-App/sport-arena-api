@@ -79,6 +79,21 @@ func TestProcessPayment(t *testing.T) {
 	})
 }
 
+func TestGetOwnerHistory(t *testing.T) {
+	t.Run("TestGetByIdSuccess", func(t *testing.T) {
+		userUseCase := NewPaymentUseCase(mockTransactionRepository{}, payment.NewService())
+		data, err := userUseCase.GetOwnerHistory(1)
+		assert.Nil(t, err)
+		assert.Equal(t, "venue", data[0].Name)
+	})
+
+	t.Run("TestGetUserByIdError", func(t *testing.T) {
+		userUseCase := NewPaymentUseCase(mockTransactionRepositoryError{}, payment.NewService())
+		_, err := userUseCase.GetOwnerHistory(1)
+		assert.NotNil(t, err)
+	})
+}
+
 // === mock success ===
 type mockTransactionRepository struct{}
 
@@ -106,6 +121,12 @@ func (m mockTransactionRepository) GetByIdTransaction(ID int) (_entities.Payment
 	}, nil
 }
 
+func (m mockTransactionRepository) GetOwnerHistory(id int) ([]_entities.Venue, error) {
+	return []_entities.Venue{
+		{Name: "venue"},
+	}, nil
+}
+
 // === mock error ===
 
 type mockTransactionRepositoryError struct{}
@@ -124,4 +145,8 @@ func (m mockTransactionRepositoryError) UpdateTransaction(transaction _entities.
 
 func (m mockTransactionRepositoryError) GetByIdTransaction(ID int) (_entities.Payment, error) {
 	return _entities.Payment{}, fmt.Errorf("error get all data facility")
+}
+
+func (m mockTransactionRepositoryError) GetOwnerHistory(id int) ([]_entities.Venue, error) {
+	return nil, fmt.Errorf("error get all data facility")
 }
